@@ -1255,9 +1255,12 @@
         }
       });
       
-      // Current location button
+      // Current location button [HERE SWAG]
       document.getElementById('current-location').addEventListener('click', function() {
-        getCurrentLocation(false);
+        // getCurrentLocation(true);
+        map.setCenter(defaultLocation);
+        usingDefaultLocation = true;
+        addDefaultLocationMarker();
       });
       
       // Close place info card
@@ -1273,7 +1276,7 @@
           var destination = activeMarker.getPosition();
           var origin;
           
-          if (currentLocation == "REMOVE_THIS_TO_ENABLE") {
+          if (currentLocation) {
             origin = currentLocation.lat + ',' + currentLocation.lng;
           } else {
             // Use Park Hyatt as default starting point
