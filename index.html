@@ -18,6 +18,30 @@
   <!-- ================  BASE STYLES  ================= -->
   <style>
 /* -------------------------------------------------- */
+
+/* Marker text bubbles (built‑in label) */
+
+.marker-label {
+  background: #ffffff;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  color: var(--text);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  white-space: nowrap;
+  pointer-events: none;
+  border-left: 3px solid transparent;
+  
+      transform: translateY(calc(-100% - 6px)) !important;
+}
+.marker-label.food      { border-color: var(--food); }
+.marker-label.activity  { border-color: var(--activity); }
+.marker-label.drink     { border-color: var(--drink); }
+
+.marker-label.food      { border-color: var(--food); }
+.marker-label.activity  { border-color: var(--activity); }
+.marker-label.drink     { border-color: var(--drink); }
+
 /* original variables (unchanged)                     */
 :root{
   --primary:#0277bd;--primary-light:#e1f5fe;--primary-dark:#01579b;
@@ -625,73 +649,10 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
     }
     
     /* Next destination floating button */
-    .next-destination-btn {
-      position: absolute;
-      right: 10px;
-      bottom: 160px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      height: 44px;
-      padding: 0 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow);
-      z-index: 997;
-      cursor: pointer;
-      transition: var(--transition);
-      font-weight: 500;
-      font-size: 14px;
-      max-width: calc(100% - 100px);
-    }
-    
-    .next-destination-btn:active {
-      transform: scale(0.97);
-    }
-    
-    .next-destination-btn:hover {
-      background: var(--primary-dark);
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .next-destination-btn i {
-      margin-right: 8px;
-      flex-shrink: 0;
-    }
-    
     .next-destination-text {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-    
-    /* Weather widget */
-    .weather-widget {
-      position: absolute;
-      right: 10px;
-      bottom: 30px;
-      background: white;
-      border-radius: var(--radius);
-      padding: 10px 15px;
-      box-shadow: var(--shadow);
-      z-index: 996;
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      transition: var(--transition);
-    }
-    
-    .weather-widget:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-2px);
-    }
-    
-    .weather-widget i {
-      font-size: 18px;
-      margin-right: 8px;
-      color: var(--chicago-blue);
     }
     
     /* Map container */
@@ -848,7 +809,20 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
       background: var(--primary-dark);
     }
     
-    /* Footer */
+    
+/* ETA pill */
+.eta-pill{
+  font-weight:600;
+  background:var(--primary-light);
+  color:var(--primary-dark);
+  padding:4px 8px;
+  border-radius:12px;
+  display:inline-block;
+  margin-top:4px;
+  font-size:13px;
+}
+
+\1
     .footer {
       text-align: center;
       padding: 10px 15px;
@@ -922,30 +896,6 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
     }
     
     /* Label toggle switch */
-    .label-toggle {
-      position: absolute;
-      right: 10px;
-      bottom: 210px;
-      background: white;
-      border-radius: var(--radius);
-      padding: 8px 15px;
-      box-shadow: var(--shadow);
-      z-index: 997;
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      transition: var(--transition);
-    }
-    
-    .label-toggle:hover {
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .label-toggle .toggle-label {
-      margin-right: 10px;
-      font-weight: 500;
-    }
-    
     .switch {
       position: relative;
       display: inline-block;
@@ -996,23 +946,7 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
     }
     
     /* Map label styles */
-    .map-label {
-      position: absolute;
-      transform: translate(-50%, -100%);
-      background-color: white;
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 150px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+    
     
     .map-label.food {
       border-left: 3px solid var(--food);
@@ -1190,12 +1124,8 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
   #toggle-sidebar i{transform:none!important}
 
   /* enlarge common tap targets */
-  .map-btn,.travel-mode-btn,.current-location-btn,.next-destination-btn{
-    width:var(--tap);height:var(--tap)
-  }
-
-  /* keep map clean */
-  .map-legend,.weather-widget{display:none}
+  .map-btn,.travel-mode-btn,.current-location-btn,/* keep map clean */
+  .map-legend{display:none}
 }
 /* -------------------------------------------------- */
   </style>
@@ -1640,31 +1570,9 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
         <button id="traffic-toggle" class="map-btn" title="Toggle Traffic">
           <i class="fas fa-car"></i>
         </button>
-        <button id="transit-toggle" class="map-btn" title="Toggle Transit">
-          <i class="fas fa-subway"></i>
-        </button>
-        <button id="weather-toggle" class="map-btn" title="Toggle Weather">
-          <i class="fas fa-cloud-sun"></i>
-        </button>
-      </div>
-      
-      <div class="label-toggle">
-        <span class="toggle-label">Labels</span>
-        <label class="switch">
-          <input type="checkbox" id="label-toggle-checkbox" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-      
-      <button id="current-location" class="current-location-btn" title="Find My Location">
+      </div><button id="current-location" class="current-location-btn" title="Find My Location">
         <i class="fas fa-location-crosshairs"></i>
-      </button>
-      
-      <button id="next-destination" class="next-destination-btn">
-        <i class="fas fa-arrow-right"></i> <span class="next-destination-text">Next Stop</span>
-      </button>
-      
-      <div class="map-legend">
+      </button><div class="map-legend">
         <div class="legend-title">
           <span>PLACE CATEGORIES</span>
           <i class="fas fa-info-circle"></i>
@@ -1683,11 +1591,6 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
         </div>
       </div>
       
-      <div class="weather-widget">
-        <i class="fas fa-cloud-sun"></i>
-        <span id="weather-info">Loading weather...</span>
-      </div>
-      
       <div class="travel-info-panel hidden">
         <div class="travel-info-header">
           <h3>Travel to Next Location</h3>
@@ -1699,6 +1602,7 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
           <p><i class="fas fa-map-marker-alt"></i> <strong>To:</strong> <span id="next-location-name">Next location</span></p>
           <p><i class="fas fa-clock"></i> <strong>ETA:</strong> <span id="next-location-time">Calculating...</span></p>
           <p><i class="fas fa-road"></i> <strong>Distance:</strong> <span id="next-location-distance">Calculating...</span></p>
+          <p id="eta-pill" class="eta-pill" style="display:none;"></p>
           <p><i class="fas fa-traffic-light"></i> <strong>Traffic:</strong> <span id="traffic-status">Checking...</span></p>
           
           <div class="travel-mode-options">
@@ -1706,17 +1610,9 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
               <i class="fas fa-car"></i>
               <span>Drive</span>
             </button>
-            <button class="travel-mode-btn" data-mode="TRANSIT">
-              <i class="fas fa-subway"></i>
-              <span>Transit</span>
-            </button>
             <button class="travel-mode-btn" data-mode="WALKING">
               <i class="fas fa-walking"></i>
               <span>Walk</span>
-            </button>
-            <button class="travel-mode-btn" data-mode="BICYCLING">
-              <i class="fas fa-bicycle"></i>
-              <span>Bike</span>
             </button>
           </div>
           
@@ -1746,15 +1642,12 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
     var directionsService;
     var directionsRenderer;
     var trafficLayer;
-    var transitLayer;
     var currentPositionMarker = null;
     var watchPositionId = null;
-    var weatherShown = true;
     var currentLocation = null;
     var activeMarker = null;
     var nextLocationIndex = 0;
     var isTrafficVisible = false;
-    var isTransitVisible = false;
     var currentTravelMode = "DRIVING";
     var sidebarCollapsed = false;
     var dayPlaceData = {};
@@ -1885,9 +1778,6 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
       // Set up event listeners
       setupEventListeners();
       
-      // Load weather data
-      getWeatherData();
-      
       // Start processing places in batches
       findPlacesInBatches();
       
@@ -1902,6 +1792,22 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
     function initMap() {
       // Create directions service for route calculations
       directionsService = new google.maps.DirectionsService();
+
+// ---------- ETA helper ----------
+function calcETA(origin, destination, mode, cacheKey){
+  const cached = sessionStorage.getItem(cacheKey);
+  if(cached) return Promise.resolve(JSON.parse(cached));
+  return directionsService.route({
+    origin: origin,
+    destination: destination,
+    travelMode: google.maps.TravelMode[mode],
+  }).then(res=>{
+    const eta = res.routes[0].legs[0].duration.text;
+    sessionStorage.setItem(cacheKey, JSON.stringify(eta));
+    return eta;
+  }).catch(()=> '–');
+}
+
       
       // Create geocoder service
       geocoder = new google.maps.Geocoder();
@@ -1911,9 +1817,9 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
         center: { lat: 41.878, lng: -87.629 },
         zoom: 12,
         mapTypeControl: false,
-        streetViewControl: true,
+        streetViewControl: false,
         fullscreenControl: false, // Disable fullscreen control which causes issues on iOS
-        zoomControl: true,
+        zoomControl: false,
         gestureHandling: 'greedy', // Improves map interaction on mobile
         styles: [
           {
@@ -1933,7 +1839,6 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
       
       // Create traffic and transit layers
       trafficLayer = new google.maps.TrafficLayer();
-      transitLayer = new google.maps.TransitLayer();
       
       // Create directions renderer
       directionsRenderer = new google.maps.DirectionsRenderer({
@@ -2085,13 +1990,7 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
       directionsRenderer.setDirections({routes: []});
       
       // Update next destination button
-      updateNextDestinationButton();
-      
-      // Update weather display
-      if (window.weatherData && window.weatherData[currentDay]) {
-        updateWeatherDisplay(window.weatherData[currentDay]);
       }
-    }
     
     // Refresh data 
     function refreshData() {
@@ -2184,47 +2083,9 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
         }
       });
       
-      // Toggle transit layer
-      document.getElementById('transit-toggle').addEventListener('click', function() {
-        this.classList.toggle('active');
-        isTransitVisible = !isTransitVisible;
-        
-        if (isTransitVisible) {
-          transitLayer.setMap(map);
-          showToast('Transit layer enabled', 'success');
-        } else {
-          transitLayer.setMap(null);
-          showToast('Transit layer disabled', 'info');
-        }
-      });
-      
-      // Toggle weather widget
-      document.getElementById('weather-toggle').addEventListener('click', function() {
-        this.classList.toggle('active');
-        weatherShown = !weatherShown;
-        
-        var weatherWidget = document.querySelector('.weather-widget');
-        if (weatherShown) {
-          weatherWidget.style.display = 'flex';
-        } else {
-          weatherWidget.style.display = 'none';
-        }
-      });
-      
-      // Toggle map labels
-      document.getElementById('label-toggle-checkbox').addEventListener('change', function() {
-        showLabels = this.checked;
-        toggleMapLabels(showLabels);
-      });
-      
       // Current location button
       document.getElementById('current-location').addEventListener('click', function() {
         getCurrentLocation();
-      });
-      
-      // Next destination button
-      document.getElementById('next-destination').addEventListener('click', function() {
-        showNextDestination();
       });
       
       // Close travel info panel
@@ -2477,8 +2338,7 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
         
         // Reposition map labels
         if (showLabels) {
-          updateMapLabels();
-        }
+          }
       });
       
       // Safari-specific fixes
@@ -2587,7 +2447,6 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
           document.getElementById('loading').style.display = 'none';
           progressContainer.classList.remove('visible');
           showDayMarkers(currentDay);
-          updateNextDestinationButton();
           showToast('All locations loaded!', 'success');
           return;
         }
@@ -2711,779 +2570,109 @@ body{font-family:Poppins,sans-serif;color:var(--text);background:var(--backgroun
     }
     
     // Create a marker for a place
-    function createMarker(day, name, place, category, type, time) {
+    
+function createMarker(day, name, place, category, type, time) {
       var markerKey = day + '-' + name;
-      
-      // Skip if marker already exists
       if (markers[markerKey]) return;
-      
-      // Create a marker
+
+      var colors = {
+        food: "#e74c3c",
+        activity: "#27ae60",
+        drink: "#9b59b6"
+      };
+      var iconColor = colors[category] || "#3498db";
+
       var marker = new google.maps.Marker({
         position: place.geometry.location,
-        map: null,
+        map: null,            // added later by showDayMarkers
         title: name,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          fillColor: colors[category] || '#3498db',
-          fillOpacity: 0.9,
-          strokeWeight: 2,
-          strokeColor: 'white',
-          scale: 10
-        },
+        customLabel: {text: name, className: "marker-label "+category},
+        label: {text: name, className: "marker-label "+category},
         animation: google.maps.Animation.DROP
       });
-      
-      // Generate stars display based on rating
+
+      // Generate stars display
       var starsHTML = '';
       if (place.rating) {
         var fullStars = Math.floor(place.rating);
         var halfStar = place.rating % 1 >= 0.5;
-        
-        for (var i = 0; i < fullStars; i++) {
-          starsHTML += '<i class="fas fa-star"></i>';
-        }
-        
-        if (halfStar) {
-          starsHTML += '<i class="fas fa-star-half-alt"></i>';
-        }
-        
+        for (var i = 0; i < fullStars; i++) starsHTML += '<i class="fas fa-star"></i>';
+        if (halfStar) starsHTML += '<i class="fas fa-star-half-alt"></i>';
         var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-        for (var i = 0; i < emptyStars; i++) {
-          starsHTML += '<i class="far fa-star"></i>';
-        }
+        for (var i = 0; i < emptyStars; i++) starsHTML += '<i class="far fa-star"></i>';
       }
-      
-      // Get a photo URL if available
       var photoUrl = '';
       if (place.photos && place.photos.length > 0) {
-        try {
-          photoUrl = place.photos[0].getUrl({maxWidth: 200, maxHeight: 200});
-        } catch (e) {
-          // If photo URL fails, ignore
-          console.log("Couldn't load photo for: " + name);
-        }
+        try { photoUrl = place.photos[0].getUrl({maxWidth:200,maxHeight:200}); } catch(e){}
       }
-      
-      // Create info window content
-      var contentString = 
+
+      var contentString =
         '<div class="custom-info-window">' +
           '<div class="info-window-content">' +
             '<h3>' + name + '</h3>' +
             '<p><strong>' + type + '</strong>' + (time ? ' • <i class="far fa-clock"></i> ' + time : '') + '</p>' +
             '<p><i class="fas fa-map-marker-alt"></i> ' + (place.formatted_address || 'Address unavailable') + '</p>' +
-            (place.rating ? 
-              '<div class="info-window-rating">' +
-                '<div class="stars">' + starsHTML + '</div>' +
-                '<span>' + place.rating + '</span>' +
-              '</div>' : '') +
+            (place.rating ? '<div class="info-window-rating"><div class="stars">' + starsHTML + '</div><span>' + place.rating + '</span></div>' : '') +
             (photoUrl ? '<img src="' + photoUrl + '" alt="' + name + '" style="width:100%; margin-top:8px; border-radius:4px;">' : '') +
             '<div class="info-window-action">' +
-              '<button class="info-window-btn" onclick="showDirectionsToMarker(\'' + markerKey + '\')">' +
-                '<i class="fas fa-directions"></i> Directions' +
-              '</button>' +
-              '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(name) + '&query_place_id=' + place.place_id + '" target="_blank" class="info-window-btn" style="text-decoration:none;">' +
-                '<i class="fas fa-external-link-alt"></i> View on Maps' +
-              '</a>' +
+              '<button class="info-window-btn" onclick="showDirectionsToMarker(\'' + markerKey + '\')"><i class="fas fa-directions"></i> Directions</button>' +
+              '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(name) + '&query_place_id=' + place.place_id + '" target="_blank" class="info-window-btn" style="text-decoration:none;"><i class="fas fa-external-link-alt"></i> View on Maps</a>' +
             '</div>' +
           '</div>' +
         '</div>';
-      
-      var infoWindow = new google.maps.InfoWindow({
-        content: contentString,
-        maxWidth: 300
-      });
-      
-      // Add click listener to marker
+
+      var infoWindow = new google.maps.InfoWindow({content: contentString, maxWidth: 300});
+
       marker.addListener('click', function() {
-        // Close any open info window
-        if (activeInfoWindow) {
-          activeInfoWindow.close();
-        }
-        
-        // Open this info window
+        if (activeInfoWindow) activeInfoWindow.close();
         infoWindow.open(map, marker);
         activeInfoWindow = infoWindow;
-        visibleInfoWindow = infoWindow;
         activeMarker = marker;
-        
-        // If we have current location, show directions panel
-        if (currentLocation) {
-          showTravelInfoPanel(marker, name);
-        }
+        if (currentLocation) showTravelInfoPanel(marker, name);
       });
-      
-      // Store marker reference
+
       markers[markerKey] = marker;
-      
-      // Create map label if showing labels
-      if (showLabels) {
-        createMapLabel(marker, name, category);
-      }
-    }
-    
-    // Create a label for a marker
-    function createMapLabel(marker, name, category) {
-      var labelDiv = document.createElement('div');
-      labelDiv.className = 'map-label ' + category;
-      labelDiv.textContent = name;
-      
-      // Create map label overlay
-      var label = new LabelOverlay(marker.getPosition(), labelDiv);
-      label.setMap(map);
-      
-      // Store reference to label
-      markerLabels[marker.title] = label;
-      
-      // Show label with fade-in
-      setTimeout(function() {
-        labelDiv.style.opacity = '1';
-      }, 100);
-    }
-    
-    // Custom overlay for marker labels
-    function LabelOverlay(position, content) {
-      this.position = position;
-      this.content = content;
-    }
-    
-    LabelOverlay.prototype = new google.maps.OverlayView();
-    
-    LabelOverlay.prototype.onAdd = function() {
-      this.div = this.content;
-      var panes = this.getPanes();
-      panes.overlayMouseTarget.appendChild(this.div);
-    };
-    
-    LabelOverlay.prototype.draw = function() {
-      var projection = this.getProjection();
-      var position = projection.fromLatLngToDivPixel(this.position);
-      
-      this.div.style.left = position.x + 'px';
-      this.div.style.top = position.y + 'px';
-    };
-    
-    LabelOverlay.prototype.onRemove = function() {
-      this.div.parentNode.removeChild(this.div);
-      this.div = null;
-    };
-    
-    // Toggle visibility of all map labels
-    function toggleMapLabels(show) {
-      // Update all existing labels
-      for (var name in markerLabels) {
-        if (markerLabels.hasOwnProperty(name)) {
-          var label = markerLabels[name];
-          
-          if (show) {
-            label.setMap(map);
-            setTimeout(function(div) {
-              div.style.opacity = '1';
-            }, 10, label.content);
-          } else {
-            label.content.style.opacity = '0';
-            setTimeout(function(label) {
-              label.setMap(null);
-            }, 300, label);
-          }
-        }
-      }
-      
-      // If turning on and no labels exist yet, create them
-      if (show && Object.keys(markerLabels).length === 0) {
-        Object.keys(markers).forEach(function(key) {
-          if (key.startsWith(currentDay)) {
-            var marker = markers[key];
-            var name = marker.getTitle();
-            var category = getCategoryFromKey(key);
-            
-            createMapLabel(marker, name, category);
-          }
-        });
-      }
-    }
-    
-    // Update positions of all map labels (e.g. after zoom/pan)
-    function updateMapLabels() {
-      for (var name in markerLabels) {
-        if (markerLabels.hasOwnProperty(name)) {
-          var label = markerLabels[name];
-          label.draw();
-        }
-      }
-    }
-    
-    // Extract category from marker key
-    function getCategoryFromKey(key) {
-      var parts = key.split('-');
-      var day = parts[0];
-      var name = parts.slice(1).join('-');
-      
-      // Look up in itinerary data
-      for (var i = 0; i < itineraryData.length; i++) {
-        if (itineraryData[i][0] === day && itineraryData[i][1] === name) {
-          return itineraryData[i][3]; // category
-        }
-      }
-      
-      // Default
-      return 'activity';
-    }
-    
-    // Show markers for a specific day
-    function showDayMarkers(day) {
-      // Hide all markers
-      for (var key in markers) {
-        if (markers.hasOwnProperty(key)) {
-          markers[key].setMap(null);
-        }
-      }
-      
-      // Hide all labels
-      for (var name in markerLabels) {
-        if (markerLabels.hasOwnProperty(name)) {
-          markerLabels[name].setMap(null);
-          delete markerLabels[name]; // Remove reference
-        }
-      }
-      
-      // Close any open info window
-      if (activeInfoWindow) {
-        activeInfoWindow.close();
-        activeInfoWindow = null;
-      }
-      
-      // Show only markers for the selected day
-      var dayMarkers = [];
-      for (var key in markers) {
-        if (markers.hasOwnProperty(key)) {
-          if (key.startsWith(day)) {
+}
+
+
+
+// Show markers for a specific day
+function showDayMarkers(day) {
+    // Hide all
+    Object.keys(markers).forEach(function(key){
+        markers[key].setMap(null);
+    });
+
+    var dayMarkers = [];
+    Object.keys(markers).forEach(function(key){
+        if(key.startsWith(day)){
             markers[key].setMap(map);
             dayMarkers.push(markers[key]);
-            
-            // Create label if showing labels
-            if (showLabels) {
-              var marker = markers[key];
-              var name = marker.getTitle();
-              var category = getCategoryFromKey(key);
-              createMapLabel(marker, name, category);
-            }
-          }
         }
-      }
-      
-      // Fit map to these markers if there are any
-      if (dayMarkers.length > 0) {
+    });
+
+    if(dayMarkers.length){
         var bounds = new google.maps.LatLngBounds();
-        for (var i = 0; i < dayMarkers.length; i++) {
-          bounds.extend(dayMarkers[i].getPosition());
-        }
-        map.fitBounds(bounds, { padding: 70 });
-        
-        // Add listener for zoom/pan to update labels
-        google.maps.event.addListener(map, 'idle', function() {
-          if (showLabels) {
-            updateMapLabels();
-          }
-        });
-      }
+        dayMarkers.forEach(function(m){ bounds.extend(m.getPosition()); });
+        map.fitBounds(bounds, {padding: 70});
     }
-    
-    // Get current geolocation
-    function getCurrentLocation() {
-      if (navigator.geolocation) {
-        document.getElementById('loading').style.display = 'flex';
-        
-        navigator.geolocation.getCurrentPosition(function(position) {
-          var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          
-          // Store current location
-          currentLocation = pos;
-          
-          // Add or update position marker
-          if (!currentPositionMarker) {
-            currentPositionMarker = new google.maps.Marker({
-              position: pos,
-              map: map,
-              title: 'Your location',
-              icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                fillColor: '#4285F4',
-                fillOpacity: 1,
-                strokeColor: '#ffffff',
-                strokeWeight: 2,
-                scale: 12
-              },
-              zIndex: 1000
-            });
-            
-            // Add accuracy circle
-            new google.maps.Circle({
-              map: map,
-              center: pos,
-              radius: position.coords.accuracy,
-              strokeColor: '#4285F4',
-              strokeOpacity: 0.2,
-              strokeWeight: 1,
-              fillColor: '#4285F4',
-              fillOpacity: 0.1
-            });
-            
-          } else {
-            currentPositionMarker.setPosition(pos);
-          }
-          
-          // Center map on position
-          map.setCenter(pos);
-          map.setZoom(15);
-          
-          document.getElementById('loading').style.display = 'none';
-          
-          // Calculate nearest attraction
-          findNearestAttraction(pos);
-          
-          // Start watching position for continuous updates
-          startWatchingPosition();
-          
-          showToast('Your location found!', 'success');
-          
-        }, function(error) {
-          document.getElementById('loading').style.display = 'none';
-          console.error('Error getting location:', error);
-          showToast('Could not get your location. Please check permissions.', 'error');
-        }, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        });
-      } else {
-        showToast('Geolocation is not supported by this browser.', 'error');
-      }
-    }
-    
-    // Start watching user position for continuous updates
-    function startWatchingPosition() {
-      if (watchPositionId) {
-        navigator.geolocation.clearWatch(watchPositionId);
-      }
-      
-      if (navigator.geolocation) {
-        watchPositionId = navigator.geolocation.watchPosition(function(position) {
-          var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          
-          // Update stored location
-          currentLocation = pos;
-          
-          // Update marker position
-          if (currentPositionMarker) {
-            currentPositionMarker.setPosition(pos);
-          }
-          
-        }, null, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 30000
-        });
-      }
-    }
-    
-    // Find the nearest attraction to the current location
-    function findNearestAttraction(position) {
-      var nearest = null;
-      var minDistance = Infinity;
-      
-      // Only check markers for the current day
-      for (var key in markers) {
-        if (markers.hasOwnProperty(key) && key.startsWith(currentDay)) {
-          var marker = markers[key];
-          var markerPos = marker.getPosition();
-          
-          // Calculate distance
-          var distance = google.maps.geometry.spherical.computeDistanceBetween(
-            new google.maps.LatLng(position.lat, position.lng),
-            markerPos
-          );
-          
-          if (distance < minDistance) {
-            minDistance = distance;
-            nearest = marker;
-          }
-        }
-      }
-      
-      if (nearest) {
-        // Show toast with nearest attraction
-        var distance = (minDistance / 1000).toFixed(1); // Convert to km
-        showToast('Nearest: ' + nearest.getTitle() + ' (' + distance + ' km)', 'info');
-      }
-    }
-    
-    // Global function to show directions to a marker
-    window.showDirectionsToMarker = function(markerKey) {
-      var marker = markers[markerKey];
-      
-      if (marker) {
-        // Set as active marker
-        activeMarker = marker;
-        
-        if (currentLocation) {
-          // Calculate and display route
-          calculateAndDisplayRoute();
-          
-          // Show travel info panel
-          showTravelInfoPanel(marker, marker.getTitle());
-        } else {
-          // Prompt to get current location
-          showToast('Please share your location to get directions', 'info');
-          getCurrentLocation();
-        }
-      }
-    };
-    
-    // Calculate and display route between current location and destination
-    function calculateAndDisplayRoute(travelMode) {
-      if (!travelMode) {
-        travelMode = currentTravelMode;
-      }
-      
-      if (!currentLocation || !activeMarker) return;
-      
-      var destination = activeMarker.getPosition();
-      
-      directionsService.route({
-        origin: currentLocation,
-        destination: destination,
-        travelMode: google.maps.TravelMode[travelMode],
-        provideRouteAlternatives: false,
-        drivingOptions: {
-          departureTime: new Date(),
-          trafficModel: google.maps.TrafficModel.BEST_GUESS
-        }
-      })
-      .then(function(response) {
-        // Display the route on the map
-        directionsRenderer.setDirections(response);
-        
-        // Update travel info panel with new details
-        var route = response.routes[0];
-        var leg = route.legs[0];
-        
-        document.getElementById('next-location-time').textContent = leg.duration.text;
-        document.getElementById('next-location-distance').textContent = leg.distance.text;
-        
-        // Check if there is traffic info available
-        if (leg.duration_in_traffic) {
-          var trafficRatio = leg.duration_in_traffic.value / leg.duration.value;
-          var trafficStatus = 'Light';
-          var statusColor = 'green';
-          
-          if (trafficRatio > 1.5) {
-            trafficStatus = 'Heavy';
-            statusColor = 'red';
-          } else if (trafficRatio > 1.2) {
-            trafficStatus = 'Moderate';
-            statusColor = 'orange';
-          }
-          
-          document.getElementById('traffic-status').textContent = trafficStatus;
-          document.getElementById('traffic-status').style.color = statusColor;
-        } else {
-          document.getElementById('traffic-status').textContent = 'Unknown';
-          document.getElementById('traffic-status').style.color = '';
-        }
-      })
-      .catch(function(error) {
-        console.error('Directions request failed:', error);
-        showToast('Could not calculate directions', 'error');
-      });
-    }
-    
-    // Show the travel info panel with details about the next location
-    function showTravelInfoPanel(marker, name) {
-      // Update panel content
-      document.getElementById('next-location-name').textContent = name;
-      
-      // Calculate and show route
-      calculateAndDisplayRoute();
-      
-      // Show panel
-      document.querySelector('.travel-info-panel').classList.remove('hidden');
-    }
-    
-    // Show the next destination in the itinerary
-    function showNextDestination() {
-      // Get day places in order they appear in the itinerary
-      var dayPlaces = dayPlaceData[currentDay] || [];
-      
-      // If we have places for this day
-      if (dayPlaces.length > 0) {
-        // Get next destination
-        if (nextLocationIndex >= dayPlaces.length) {
-          nextLocationIndex = 0;
-        }
-        
-        var nextPlace = dayPlaces[nextLocationIndex];
-        nextLocationIndex++;
-        
-        // Update next destination button text
-        updateNextDestinationButton();
-        
-        // Find the marker
-        var markerKey = currentDay + '-' + nextPlace.name;
-        var nextMarker = markers[markerKey];
-        
-        if (nextMarker) {
-          // Trigger click on marker
-          google.maps.event.trigger(nextMarker, 'click');
-          
-          // Pan to marker
-          map.panTo(nextMarker.getPosition());
-          map.setZoom(16);
-        }
-      }
-    }
-    
-    // Update next destination button text
-    function updateNextDestinationButton() {
-      // Get day places in order they appear in the itinerary
-      var dayPlaces = dayPlaceData[currentDay] || [];
-      
-      // If we have places
-      if (dayPlaces.length > 0) {
-        // Get next destination
-        var index = nextLocationIndex;
-        if (index >= dayPlaces.length) {
-          index = 0;
-        }
-        
-        var nextPlace = dayPlaces[index];
-        
-        // Update button text
-        document.querySelector('.next-destination-text').textContent = 'Next: ' + nextPlace.name;
-      } else {
-        document.querySelector('.next-destination-text').textContent = 'Next Stop';
-      }
-    }
-    
-    // Fetch weather data for Chicago
-    function getWeatherData() {
-      // For demo purposes, use a static forecast
-      // In a real app, you would use a weather API with your API key
-      
-      // Generate random weather data for demo
-      var weatherTypes = ['sunny', 'partly cloudy', 'cloudy', 'rainy'];
-      var tempRanges = [
-        { min: 65, max: 78 }, // Thursday
-        { min: 70, max: 82 }, // Friday
-        { min: 68, max: 75 }, // Saturday
-        { min: 72, max: 80 }  // Sunday
-      ];
-      
-      var days = ['Thursday', 'Friday', 'Saturday', 'Sunday'];
-      var weatherData = {};
-      
-      for (var i = 0; i < days.length; i++) {
-        var day = days[i];
-        var weatherIndex = Math.floor(Math.random() * weatherTypes.length);
-        var weather = weatherTypes[weatherIndex];
-        var temp = Math.floor(Math.random() * (tempRanges[i].max - tempRanges[i].min + 1)) + tempRanges[i].min;
-        
-        var icon = 'fa-sun';
-        if (weather === 'partly cloudy') icon = 'fa-cloud-sun';
-        if (weather === 'cloudy') icon = 'fa-cloud';
-        if (weather === 'rainy') icon = 'fa-cloud-rain';
-        
-        weatherData[day] = {
-          condition: weather,
-          temperature: temp,
-          icon: icon
-        };
-      }
-      
-      // Update weather widget with current day's weather
-      updateWeatherDisplay(weatherData[currentDay]);
-      
-      // Store data for tab changes
-      window.weatherData = weatherData;
-    }
-    
-    // Update weather widget with day's forecast
-    function updateWeatherDisplay(data) {
-      if (!data) return;
-      
-      var weatherInfo = document.getElementById('weather-info');
-      weatherInfo.innerHTML = data.temperature + '°F, ' + data.condition;
-      
-      var weatherIcon = document.querySelector('.weather-widget i');
-      weatherIcon.className = 'fas ' + data.icon;
-    }
-    
-    // Show toast notification
-    function showToast(message, type) {
-      if (!type) type = 'info';
-      
-      var toast = document.getElementById('toast');
-      var toastMessage = toast.querySelector('.toast-message');
-      var icon = toast.querySelector('i');
-      
-      // Clear any existing timeout
-      if (window.toastTimeout) {
-        clearTimeout(window.toastTimeout);
-      }
-      
-      // Set message
-      toastMessage.textContent = message;
-      
-      // Set icon and color based on type
-      switch (type) {
-        case 'success':
-          icon.className = 'fas fa-check-circle';
-          toast.style.borderLeftColor = '#27ae60';
-          icon.style.color = '#27ae60';
-          break;
-        case 'error':
-          icon.className = 'fas fa-exclamation-circle';
-          toast.style.borderLeftColor = '#e74c3c';
-          icon.style.color = '#e74c3c';
-          break;
-        case 'warning':
-          icon.className = 'fas fa-exclamation-triangle';
-          toast.style.borderLeftColor = '#f39c12';
-          icon.style.color = '#f39c12';
-          break;
-        default:
-          icon.className = 'fas fa-info-circle';
-          toast.style.borderLeftColor = '#3498db';
-          icon.style.color = '#3498db';
-      }
-      
-      // Show the toast
-      toast.classList.add('show');
-      
-      // Hide after 5 seconds
-      window.toastTimeout = setTimeout(function() {
-        toast.classList.remove('show');
-      }, 3000);
-    }
-  </script>
-  
-  <!-- Basic service worker for offline support -->
-  <script>
-    // Register service worker for offline support
-    if ('serviceWorker' in navigator) {
-      // Create a simple service worker script content
-      var swContent = `
-        const CACHE_NAME = 'chicago-itinerary-v1';
-        
-        // Cache core assets on install
-        self.addEventListener('install', event => {
-          event.waitUntil(
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                return cache.addAll([
-                  '/',
-                  '/index.html',
-                  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap',
-                  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
-                ]);
-              })
-          );
-        });
-        
-        // Clean up old caches
-        self.addEventListener('activate', event => {
-          event.waitUntil(
-            caches.keys().then(cacheNames => {
-              return Promise.all(
-                cacheNames.filter(cacheName => {
-                  return cacheName.startsWith('chicago-itinerary-') && cacheName !== CACHE_NAME;
-                }).map(cacheName => {
-                  return caches.delete(cacheName);
-                })
-              );
-            })
-          );
-        });
-        
-        // Serve from cache, fall back to network
-        self.addEventListener('fetch', event => {
-          event.respondWith(
-            caches.match(event.request)
-              .then(response => {
-                // If in cache, return the cached version
-                if (response) {
-                  return response;
-                }
-                
-                // Otherwise fetch from network
-                return fetch(event.request)
-                  .then(response => {
-                    // Don't cache non-successful responses or Google Maps API requests
-                    if (!response || response.status !== 200 || event.request.url.includes('maps.googleapis.com')) {
-                      return response;
-                    }
-                    
-                    // Cache the response for future use
-                    const responseToCache = response.clone();
-                    caches.open(CACHE_NAME)
-                      .then(cache => {
-                        cache.put(event.request, responseToCache);
-                      });
-                    
-                    return response;
-                  })
-                  .catch(error => {
-                    // If offline and not in cache, can return a fallback
-                    console.log('Fetch failed:', error);
-                    return new Response('Offline. Please try again when connected.');
-                  });
-              })
-          );
-        });
-      `;
-      
-      // Create a Blob with the service worker content
-      var blob = new Blob([swContent], {type: 'text/javascript'});
-      var swUrl = URL.createObjectURL(blob);
-      
-      navigator.serviceWorker.register(swUrl)
-        .then(function(registration) {
-          console.log('ServiceWorker registration successful');
-        })
-        .catch(function(error) {
-          console.log('ServiceWorker registration failed: ', error);
-        });
-    }
-  </script>
-</body>
+    // apply label visibility
+    toggleMarkerLabels(showLabels);
+}
 
-<!-- ================  SCRIPT SECTION  ================= -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDDvNENjvUxZ1iw9O0jge6UiV32DApUWw&libraries=places"></script>
-<script>
-/* ----------  ALL YOUR ORIGINAL JS (unchanged)  ---------- */
-
-/*  ======  MOBILE-AWARE TOGGLE-SIDEBAR HANDLER  ======  */
-document.getElementById('toggle-sidebar').addEventListener('click',function(){
-  const itin=document.getElementById('itinerary');
-  const icon=this.querySelector('i');
-
-  if(window.innerWidth<=767){          /* phone behaviour */
-    sidebarCollapsed=!sidebarCollapsed;
-    itin.classList.toggle('collapsed',sidebarCollapsed);
-    icon.className='fas fa-chevron-up';              /* always up handle */
-    setTimeout(()=>google.maps.event.trigger(map,'resize'),310);
-  }else{                               /* desktop unchanged */
-    sidebarCollapsed=!sidebarCollapsed;
-    if(sidebarCollapsed){itin.style.width='0';icon.className='fas fa-chevron-right'}
-    else{itin.style.width='40%';icon.className='fas fa-chevron-left'}
-    setTimeout(()=>google.maps.event.trigger(map,'resize'),310);
-  }
-});
+// Toggle built-in marker labels
+function toggleMarkerLabels(show){
+    Object.values(markers).forEach(function(m){
+        if(show){
+            // restore stored label
+            if(!m.getLabel()){
+                var cat = getCategoryFromKey(m.getTitleKey || (m.get('titleKey')));
+            }
+        }else{
+            m.setLabel(null);
+        }
+    });
+}
 
 /* ----------  REST OF ORIGINAL JS (unchanged)  ---------- */
 </script>
