@@ -1849,7 +1849,9 @@
       var origin;
       
       if (currentLocation) {
-        origin = new google.maps.LatLng(currentLocation.lat, currentLocation.lng);
+        // SWAG LOL 
+        // origin = new google.maps.LatLng(currentLocation.lat, currentLocation.lng);
+        origin = defaultLocation.lat + ',' + defaultLocation.lng;
       } else {
         // Use Park Hyatt as default starting point
         origin = new google.maps.LatLng(defaultLocation.lat, defaultLocation.lng);
