@@ -1,0 +1,3414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Chicago Trip Itinerary for September 11-14, with live traffic data and navigation">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Chicago Trip Itinerary | Sept 11-14</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0277bd;
+      --primary-light: #e1f5fe;
+      --primary-dark: #01579b;
+      --chicago-red: #CF3339;
+      --chicago-blue: #66C3E4;
+      --chicago-star: #FFDA05;
+      --food: #e74c3c;
+      --food-light: #fdedec;
+      --activity: #27ae60;
+      --activity-light: #e9f7ef;
+      --drink: #9b59b6;
+      --drink-light: #f4ecf7;
+      --text: #2d3436;
+      --text-light: #636e72;
+      --border: #dfe6e9;
+      --background: #f9f9f9;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 8px;
+      --transition: all 0.3s ease;
+      --safe-area-inset-top: env(safe-area-inset-top);
+      --safe-area-inset-bottom: env(safe-area-inset-bottom);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    
+    html, body {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text);
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+      touch-action: manipulation;
+      -webkit-overflow-scrolling: touch;
+      padding-top: var(--safe-area-inset-top);
+      padding-bottom: var(--safe-area-inset-bottom);
+    }
+    
+    .container {
+      display: flex;
+      flex: 1;
+      height: calc(100% - 120px);
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Header Styles */
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      z-index: 10;
+    }
+    
+    .header-bg {
+      background-image: url('https://images.unsplash.com/photo-1494522358652-f30e61a60313?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80');
+      background-size: cover;
+      background-position: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.4;
+      z-index: 1;
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 2;
+      padding: 15px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .chicago-flag {
+      display: flex;
+      margin-bottom: 8px;
+    }
+    
+    .flag-stripe {
+      width: 15px;
+      height: 4px;
+      background-color: var(--chicago-blue);
+      margin: 0 1px;
+    }
+    
+    .flag-star {
+      color: var(--chicago-star);
+      font-size: 12px;
+      margin: -4px 2px 0;
+    }
+    
+    header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      margin: 0;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+      letter-spacing: -0.5px;
+    }
+    
+    header p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 3px;
+    }
+    
+    /* Itinerary Panel */
+    #itinerary {
+      width: 100%;
+      height: 50%;
+      overflow-y: auto;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      position: relative;
+      transition: height 0.3s ease;
+      z-index: 5;
+    }
+    
+    /* Toggle sidebar button */
+    #toggle-sidebar {
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1001;
+      width: 30px;
+      height: 30px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      transition: transform 0.3s ease;
+    }
+    
+    #toggle-sidebar:hover {
+      transform: translateX(-50%) scale(1.1);
+    }
+    
+    /* Scrollbar styling */
+    #itinerary::-webkit-scrollbar {
+      width: 5px;
+    }
+    
+    #itinerary::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    #itinerary::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+    
+    #itinerary::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+    
+    /* Day Tabs */
+    .day-tabs {
+      display: flex;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .day-tab {
+      flex: 1;
+      padding: 12px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      font-size: 14px;
+      position: relative;
+    }
+    
+    .day-tab.active {
+      border-bottom-color: var(--chicago-red);
+      color: var(--chicago-red);
+      background-color: var(--primary-light);
+    }
+    
+    .day-tab:hover:not(.active) {
+      background-color: var(--background);
+    }
+    
+    .day-tab-date {
+      display: block;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+    
+    /* Day content */
+    .day-content {
+      display: none;
+      padding: 15px;
+      animation: fadeIn 0.5s ease-in-out;
+      height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .day-content.active {
+      display: block;
+    }
+    
+    .day-header {
+      margin-bottom: 15px;
+      position: relative;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    
+    .day-header:after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 60px;
+      height: 2px;
+      background-color: var(--chicago-red);
+    }
+    
+    .day-header h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 3px;
+    }
+    
+    .day-header p {
+      color: var(--text-light);
+      font-size: 13px;
+      font-style: italic;
+    }
+    
+    /* Events */
+    .event-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .event-item {
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+      border-left: 4px solid transparent;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    
+    .event-item:active {
+      transform: scale(0.98);
+    }
+    
+    .event-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .event-item.active {
+      border: 2px solid var(--primary);
+      background-color: rgba(2, 119, 189, 0.05);
+    }
+    
+    .event-item.food {
+      border-left-color: var(--food);
+      background-color: var(--food-light);
+    }
+    
+    .event-item.act {
+      border-left-color: var(--activity);
+      background-color: var(--activity-light);
+    }
+    
+    .event-item.drink {
+      border-left-color: var(--drink);
+      background-color: var(--drink-light);
+    }
+    
+    .event-time {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 5px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .event-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .event-title i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    .food .event-title i {
+      color: var(--food);
+    }
+    
+    .act .event-title i {
+      color: var(--activity);
+    }
+    
+    .drink .event-title i {
+      color: var(--drink);
+    }
+    
+    .sub-events {
+      margin: 10px 0 0 30px;
+      padding-left: 12px;
+      border-left: 2px dashed rgba(0, 0, 0, 0.1);
+    }
+    
+    .sub-event {
+      margin-bottom: 12px;
+      font-size: 14px;
+      position: relative;
+      padding-left: 20px;
+      transition: var(--transition);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    
+    .sub-event:last-child {
+      margin-bottom: 0;
+    }
+    
+    .sub-event:active {
+      transform: scale(0.98);
+    }
+    
+    .sub-event:hover {
+      transform: translateX(3px);
+    }
+    
+    .sub-event:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #ddd;
+    }
+    
+    .sub-event.food:before {
+      background-color: var(--food);
+    }
+    
+    .sub-event.act:before {
+      background-color: var(--activity);
+    }
+    
+    .sub-event.drink:before {
+      background-color: var(--drink);
+    }
+    
+    .sub-event-note {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 2px;
+      font-style: italic;
+    }
+    
+    /* Map Controls */
+    .map-controls {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .map-btn {
+      background: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      color: var(--primary-dark);
+    }
+    
+    .map-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .map-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .map-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Travel info panel */
+    .travel-info-panel {
+      position: absolute;
+      left: 10px;
+      bottom: 30px;
+      z-index: 998;
+      background: white;
+      border-radius: var(--radius);
+      padding: 15px;
+      width: 300px;
+      max-width: calc(100% - 20px);
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .travel-info-panel.hidden {
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .travel-info-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .travel-info-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    .travel-info-close {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 5px;
+      font-size: 16px;
+    }
+    
+    .travel-info-content {
+      font-size: 14px;
+    }
+    
+    .travel-info-content p {
+      margin: 5px 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .travel-info-content i {
+      width: 20px;
+      margin-right: 8px;
+      text-align: center;
+    }
+    
+    .travel-mode-options {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    
+    .travel-mode-btn {
+      flex: 1;
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: var(--transition);
+      min-height: 45px;
+    }
+    
+    .travel-mode-btn.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+    }
+    
+    .travel-mode-btn i {
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+    
+    .navigate-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 10px 15px;
+      margin-top: 10px;
+      width: 100%;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      min-height: 44px;
+    }
+    
+    .navigate-btn:active {
+      transform: scale(0.97);
+    }
+    
+    .navigate-btn:hover {
+      background: var(--primary-dark);
+    }
+    
+    .navigate-btn i {
+      margin-right: 8px;
+    }
+    
+    /* Current location button */
+    .current-location-btn {
+      position: absolute;
+      right: 10px;
+      bottom: 110px;
+      background: white;
+      border: none;
+      border-radius: 4px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      z-index: 997;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 16px;
+    }
+    
+    .current-location-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .current-location-btn:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+    
+    /* Next destination floating button */
+    .next-destination-btn {
+      position: absolute;
+      right: 10px;
+      bottom: 160px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      height: 44px;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      z-index: 997;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+      font-size: 14px;
+      max-width: calc(100% - 100px);
+    }
+    
+    .next-destination-btn:active {
+      transform: scale(0.97);
+    }
+    
+    .next-destination-btn:hover {
+      background: var(--primary-dark);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .next-destination-btn i {
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+    
+    .next-destination-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Weather widget */
+    .weather-widget {
+      position: absolute;
+      right: 10px;
+      bottom: 30px;
+      background: white;
+      border-radius: var(--radius);
+      padding: 10px 15px;
+      box-shadow: var(--shadow);
+      z-index: 996;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+    
+    .weather-widget:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+    
+    .weather-widget i {
+      font-size: 18px;
+      margin-right: 8px;
+      color: var(--chicago-blue);
+    }
+    
+    /* Map container */
+    #map-container {
+      flex: 1;
+      position: relative;
+      transition: flex 0.3s ease;
+      height: 50%;
+      width: 100%;
+    }
+    
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+    
+    /* Legend */
+    .map-legend {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      background: white;
+      padding: 10px 15px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 995;
+      font-size: 13px;
+      pointer-events: auto;
+      transition: var(--transition);
+      max-width: 300px;
+    }
+    
+    .map-legend:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .legend-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--primary-dark);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin-right: 8px;
+      display: inline-block;
+    }
+    
+    .legend-label {
+      color: var(--text);
+      font-weight: 500;
+    }
+    
+    /* Progress indicator */
+    .progress-container {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.9);
+      border-radius: var(--radius);
+      padding: 10px 15px;
+      box-shadow: var(--shadow);
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    
+    .progress-container.visible {
+      opacity: 1;
+    }
+    
+    .progress-bar {
+      background: #eee;
+      height: 6px;
+      width: 200px;
+      border-radius: 3px;
+      margin: 0 10px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    /* Custom Google Maps InfoWindow */
+    .custom-info-window {
+      padding: 5px;
+      max-width: 250px;
+    }
+    
+    .info-window-content h3 {
+      margin: 0 0 5px;
+      color: var(--primary-dark);
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .info-window-content p {
+      margin: 3px 0;
+      font-size: 13px;
+    }
+    
+    .info-window-rating {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+    }
+    
+    .info-window-rating .stars {
+      color: #f39c12;
+      margin-right: 5px;
+    }
+    
+    .info-window-action {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .info-window-btn {
+      padding: 5px 10px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.2s ease;
+      min-height: 34px;
+    }
+    
+    .info-window-btn:hover, .info-window-btn:active {
+      background: var(--primary-dark);
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 10px 15px;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      color: var(--text-light);
+      font-size: 12px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary);
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: white;
+      padding: 12px 20px;
+      box-shadow: var(--shadow-lg);
+      border-radius: 4px;
+      z-index: 9999;
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      max-width: 90%;
+      min-width: 280px;
+    }
+    
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    .toast i {
+      margin-right: 12px;
+      font-size: 18px;
+      color: var(--primary);
+    }
+    
+    .toast-message {
+      font-size: 14px;
+      flex: 1;
+    }
+    
+    /* Label toggle switch */
+    .label-toggle {
+      position: absolute;
+      right: 10px;
+      bottom: 210px;
+      background: white;
+      border-radius: var(--radius);
+      padding: 8px 15px;
+      box-shadow: var(--shadow);
+      z-index: 997;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+    
+    .label-toggle:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .label-toggle .toggle-label {
+      margin-right: 10px;
+      font-weight: 500;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px var(--primary);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    
+    /* Map label styles */
+    .map-label {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      background-color: white;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .map-label.food {
+      border-left: 3px solid var(--food);
+    }
+    
+    .map-label.activity {
+      border-left: 3px solid var(--activity);
+    }
+    
+    .map-label.drink {
+      border-left: 3px solid var(--drink);
+    }
+    
+    /* Pull to refresh indicator */
+    .pull-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(-100%);
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 500;
+      transition: transform 0.2s ease;
+      pointer-events: none;
+      z-index: 1001;
+    }
+    
+    .pull-indicator.visible {
+      transform: translateY(0);
+    }
+    
+    .pull-spinner {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 2px solid var(--primary);
+      animation: spin 1s linear infinite;
+    }
+    
+    /* Safari-specific fixes */
+    @supports (-webkit-touch-callout: none) {
+      .day-content,
+      #itinerary {
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      .event-item,
+      .sub-event,
+      .map-btn,
+      .travel-mode-btn,
+      .navigate-btn {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      body {
+        height: -webkit-fill-available;
+      }
+    }
+    
+    /* Responsive layout */
+    @media (min-width: 768px) {
+      .container {
+        flex-direction: row;
+        height: calc(100% - 120px);
+      }
+      
+      #itinerary {
+        width: 40%;
+        height: 100%;
+      }
+      
+      #map-container {
+        width: 60%;
+        height: 100%;
+      }
+      
+      #toggle-sidebar {
+        top: 50%;
+        bottom: auto;
+        right: -15px;
+        left: auto;
+        transform: translateY(-50%);
+      }
+      
+      #toggle-sidebar:hover {
+        transform: translateY(-50%) scale(1.1);
+      }
+      
+      #toggle-sidebar i {
+        transform: rotate(-90deg);
+      }
+    }
+    
+    /* Offline indicator */
+    .offline-indicator {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #f39c12;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      font-weight: 500;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 10000;
+    }
+    
+    .offline-indicator.visible {
+      transform: translateY(0);
+    }
+    
+    /* Day transition animations */
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideInLeft {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .slide-right {
+      animation: slideInRight 0.3s forwards;
+    }
+    
+    .slide-left {
+      animation: slideInLeft 0.3s forwards;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading" class="loading-spinner">
+    <div class="spinner"></div>
+  </div>
+  
+  <div id="toast" class="toast">
+    <i class="fas fa-info-circle"></i>
+    <div class="toast-message">Notification message</div>
+  </div>
+  
+  <div id="progress" class="progress-container">
+    <span>Loading places</span>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <span id="progress-text">0%</span>
+  </div>
+  
+  <div class="offline-indicator">
+    You are offline. Some features may be limited.
+  </div>
+  
+  <div class="pull-indicator">
+    <div class="pull-spinner"></div>
+    <span>Release to refresh</span>
+  </div>
+  
+  <header>
+    <div class="header-bg"></div>
+    <div class="header-content">
+      <div class="chicago-flag">
+        <div class="flag-stripe"></div>
+        <div class="flag-star">★</div>
+        <div class="flag-stripe"></div>
+        <div class="flag-star">★</div>
+        <div class="flag-stripe"></div>
+        <div class="flag-star">★</div>
+        <div class="flag-stripe"></div>
+        <div class="flag-star">★</div>
+        <div class="flag-stripe"></div>
+      </div>
+      <h1>Chicago Trip Itinerary</h1>
+      <p>September 11-14, 2023 • Group of 7</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="itinerary">
+      <button id="toggle-sidebar" title="Toggle sidebar">
+        <i class="fas fa-chevron-down"></i>
+      </button>
+      
+      <div class="day-tabs">
+        <div class="day-tab active" data-day="Thursday">
+          <span class="day-tab-date">Sep 11</span>
+          <span class="day-tab-name">Thu</span>
+        </div>
+        <div class="day-tab" data-day="Friday">
+          <span class="day-tab-date">Sep 12</span>
+          <span class="day-tab-name">Fri</span>
+        </div>
+        <div class="day-tab" data-day="Saturday">
+          <span class="day-tab-date">Sep 13</span>
+          <span class="day-tab-name">Sat</span>
+        </div>
+        <div class="day-tab" data-day="Sunday">
+          <span class="day-tab-date">Sep 14</span>
+          <span class="day-tab-name">Sun</span>
+        </div>
+      </div>
+      
+      <div class="day-content active" id="Thursday">
+        <div class="day-header">
+          <h2>Thursday, September 11</h2>
+          <p>Arrival day & downtown exploration</p>
+        </div>
+        
+        <ul class="event-list">
+          <li class="event-item act" data-place="O'Hare International Airport Chicago">
+            <div class="event-time">2:30 PM</div>
+            <div class="event-title"><i class="fas fa-plane-arrival"></i> Land at ORD</div>
+            <div class="sub-event-note">45 min drive to hotel</div>
+          </li>
+          
+          <li class="event-item act" data-place="Park Hyatt Chicago">
+            <div class="event-title"><i class="fas fa-hotel"></i> Check‑in at Park Hyatt</div>
+            <div class="sub-event-note">Luxury hotel in the heart of the Magnificent Mile</div>
+          </li>
+          
+          <li class="event-item food" data-place="Pequod's Pizza Chicago">
+            <div class="event-time">Lunch</div>
+            <div class="event-title"><i class="fas fa-utensils"></i> Lunch at Pequod's Pizza</div>
+            <div class="sub-event-note">Famous caramelized‑crust deep dish pizza</div>
+            <ul class="sub-events">
+              <li class="sub-event food" data-place="Do-Rite Donuts Chicago">Optional dessert: Do‑Rite Donuts
+                <div class="sub-event-note">Artisanal donuts with creative flavors</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item act" data-place="Oak Street Beach Chicago">
+            <div class="event-time">Afternoon</div>
+            <div class="event-title"><i class="fas fa-umbrella-beach"></i> Oak Street Beach stroll</div>
+            <div class="sub-event-note">Urban beach with lakefront photos</div>
+          </li>
+          
+          <li class="event-item act">
+            <div class="event-title"><i class="fas fa-building"></i> Choose one skyline deck:</div>
+            <ul class="sub-events">
+              <li class="sub-event act" data-place="360 Chicago Observation Deck">360 CHICAGO + Tilt
+                <div class="sub-event-note">Thrilling tilting platform 1,000 feet above Michigan Ave</div>
+              </li>
+              <li class="sub-event act" data-place="Willis Tower Skydeck Chicago">Willis Tower Skydeck
+                <div class="sub-event-note">Step out onto The Ledge's glass balcony</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item food">
+            <div class="event-time">Evening</div>
+            <div class="event-title"><i class="fas fa-utensils"></i> Dinner options:</div>
+            <ul class="sub-events">
+              <li class="sub-event food" data-place="Au Cheval Chicago">Au Cheval
+                <div class="sub-event-note">Iconic burger ranked among America's best</div>
+              </li>
+              <li class="sub-event food" data-place="Small Cheval Chicago">Small Cheval (backup)
+                <div class="sub-event-note">Smaller version of the famous burger</div>
+              </li>
+              <li class="sub-event food" data-place="Jeni's Splendid Ice Creams Chicago">Optional dessert: Jeni's Ice Cream
+                <div class="sub-event-note">Artisan ice cream with unique flavors</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item drink">
+            <div class="event-time">Night</div>
+            <div class="event-title"><i class="fas fa-cocktail"></i> Post‑Dinner Drinks (choose):</div>
+            <ul class="sub-events">
+              <li class="sub-event drink" data-place="Konbini & Kanpai Chicago">Konbini & Kanpai
+                <div class="sub-event-note">Japanese beer cans & onigiri (Logan Square)</div>
+              </li>
+              <li class="sub-event drink" data-place="Beer Temple Chicago">Beer Temple Taproom
+                <div class="sub-event-note">30 taps including Japanese imports (Avondale)</div>
+              </li>
+              <li class="sub-event drink" data-place="Three Dots and a Dash Chicago">Three Dots & a Dash
+                <div class="sub-event-note">Tiki bar with shareable rum bowls (River North)</div>
+              </li>
+              <li class="sub-event drink" data-place="Cindy's Rooftop Chicago">Cindy's Rooftop
+                <div class="sub-event-note">Skyline punch bowls, 2-block walk to hotel</div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="day-content" id="Friday">
+        <div class="day-header">
+          <h2>Friday, September 12</h2>
+          <p>Cultural exploration & city highlights</p>
+        </div>
+        
+        <ul class="event-list">
+          <li class="event-item food" data-place="Luella's Southern Kitchen Chicago">
+            <div class="event-time">Morning</div>
+            <div class="event-title"><i class="fas fa-coffee"></i> Brunch @ Luella's Southern Kitchen</div>
+            <div class="sub-event-note">Shrimp-n-grits, waffles, Southern comfort food</div>
+          </li>
+          
+          <li class="event-item act">
+            <div class="event-time">Mid-morning</div>
+            <div class="event-title"><i class="fas fa-hiking"></i> Mid-morning activity (choose):</div>
+            <ul class="sub-events">
+              <li class="sub-event act" data-place="Montrose Point Bird Sanctuary Chicago">Montrose Point Bird Sanctuary
+                <div class="sub-event-note">Beautiful lake & skyline views</div>
+              </li>
+              <li class="sub-event act" data-place="Garfield Park Conservatory Chicago">Garfield Park Conservatory
+                <div class="sub-event-note">Indoor gardens, free donation</div>
+              </li>
+              <li class="sub-event act" data-place="Andersonville Chicago">Andersonville stroll
+                <div class="sub-event-note">Lost Larson bakery, indie shops</div>
+              </li>
+              <li class="sub-event act" data-place="Lincoln Square Chicago">Lincoln Square main street
+                <div class="sub-event-note">Cafes & mural</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item food">
+            <div class="event-time">Midday</div>
+            <div class="event-title"><i class="fas fa-utensils"></i> Lunch options:</div>
+            <ul class="sub-events">
+              <li class="sub-event food" data-place="Cafe Ba-Ba-Reeba Chicago">Cafe Ba-Ba-Reeba!
+                <div class="sub-event-note">Tapas & sangria</div>
+              </li>
+              <li class="sub-event food" data-place="The Purple Pig Chicago">Purple Pig
+                <div class="sub-event-note">Mediterranean share plates</div>
+              </li>
+              <li class="sub-event food" data-place="Vanille Patisserie Chicago">Optional dessert: Vanille Patisserie
+                <div class="sub-event-note">French pastries & macarons</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item act" data-place="Millennium Park Chicago">
+            <div class="event-time">Afternoon</div>
+            <div class="event-title"><i class="fas fa-tree"></i> Millennium Park & Crown Fountain</div>
+            <div class="sub-event-note">Visit the iconic Cloud Gate ("Bean") sculpture</div>
+          </li>
+          
+          <li class="event-item act" data-place="Chicago Cultural Center">
+            <div class="event-title"><i class="fas fa-landmark"></i> Chicago Cultural Center</div>
+            <div class="sub-event-note">Home to the world's largest Tiffany glass dome</div>
+          </li>
+          
+          <li class="event-item act">
+            <div class="event-title"><i class="fas fa-palette"></i> Optional afternoon add-ons (choose 1-2):</div>
+            <ul class="sub-events">
+              <li class="sub-event act" data-place="Art Institute of Chicago">Art Institute of Chicago
+                <div class="sub-event-note">2h express visit</div>
+              </li>
+              <li class="sub-event act" data-place="Maggie Daley Park Chicago">Maggie Daley Park
+                <div class="sub-event-note">Mini-golf / ribbon</div>
+              </li>
+              <li class="sub-event act" data-place="Chicago History Museum">Chicago History Museum
+                <div class="sub-event-note">Learn about the city's fascinating past</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item food">
+            <div class="event-time">Evening</div>
+            <div class="event-title"><i class="fas fa-utensils"></i> Dinner options (upscale):</div>
+            <ul class="sub-events">
+              <li class="sub-event food" data-place="Virtue Restaurant Chicago">Virtue
+                <div class="sub-event-note">Southern cuisine, Hyde Park</div>
+              </li>
+              <li class="sub-event food" data-place="Obelix Chicago restaurant">Obélix
+                <div class="sub-event-note">French-Moroccan fusion, River North</div>
+              </li>
+              <li class="sub-event food" data-place="BomboBar Chicago">Optional dessert: BomboBar
+                <div class="sub-event-note">Italian bomboloni</div>
+              </li>
+              <li class="sub-event food" data-place="Jeni's Splendid Ice Creams Chicago">Optional dessert: Jeni's
+                <div class="sub-event-note">Artisan ice cream</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item drink">
+            <div class="event-time">Night</div>
+            <div class="event-title"><i class="fas fa-cocktail"></i> Post‑dinner drinks & fun (choose):</div>
+            <ul class="sub-events">
+              <li class="sub-event drink" data-place="Bar Avec Chicago">Bar Avec
+                <div class="sub-event-note">Rooftop spritzes with city views</div>
+              </li>
+              <li class="sub-event drink" data-place="Shogun Sake Chicago">Shogun Listening Bar
+                <div class="sub-event-note">Vinyl records & Japanese beer</div>
+              </li>
+              <li class="sub-event drink" data-place="Murasaki Sake Lounge Chicago">Murasaki Sake Lounge
+                <div class="sub-event-note">Sake/JP beer + karaoke</div>
+              </li>
+              <li class="sub-event drink" data-place="Emporium Arcade Bar Chicago">Emporium Arcade Bar
+                <div class="sub-event-note">Retro games & craft taps</div>
+              </li>
+              <li class="sub-event drink" data-place="Second City Chicago">Second City
+                <div class="sub-event-note">Improv comedy show (Old Town)</div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="day-content" id="Saturday">
+        <div class="day-header">
+          <h2>Saturday, September 13</h2>
+          <p>Chinatown adventure & river cruise</p>
+        </div>
+        
+        <ul class="event-list">
+          <li class="event-item food" data-place="Kasama Chicago">
+            <div class="event-time">Morning</div>
+            <div class="event-title"><i class="fas fa-coffee"></i> Breakfast @ Kasama</div>
+            <div class="sub-event-note">Award-winning Filipino bakery-cafe</div>
+          </li>
+          
+          <li class="event-item act">
+            <div class="event-time">Mid-Morning</div>
+            <div class="event-title"><i class="fas fa-car"></i> Drive to Chinatown</div>
+            <div class="sub-event-note">15 min drive</div>
+          </li>
+          
+          <li class="event-item act">
+            <div class="event-title"><i class="fas fa-map-signs"></i> Chinatown non-food stops (pick 1-3):</div>
+            <ul class="sub-events">
+              <li class="sub-event act" data-place="Ping Tom Memorial Park Chicago">Ping Tom Memorial Park
+                <div class="sub-event-note">Skyline riverfront views</div>
+              </li>
+              <li class="sub-event act" data-place="Chinatown Chicago Zodiac Square">Zodiac statues & dragon mural
+                <div class="sub-event-note">Photo plaza</div>
+              </li>
+              <li class="sub-event act" data-place="Pui Tak Center Chicago">Pui Tak Center facade
+                <div class="sub-event-note">Historic landmark</div>
+              </li>
+              <li class="sub-event act" data-place="Ten Ren Tea Chicago">Quick souvenir loop
+                <div class="sub-event-note">Ten Ren Tea, Chiu Quon Bakery</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item food">
+            <div class="event-time">Midday</div>
+            <div class="event-title"><i class="fas fa-utensils"></i> Lunch in Chinatown (choose):</div>
+            <ul class="sub-events">
+              <li class="sub-event food" data-place="QXY Dumplings Chicago">QXY Dumplings
+                <div class="sub-event-note">Handmade soup dumplings (xiao long bao)</div>
+              </li>
+              <li class="sub-event food" data-place="MCCB Chicago">MCCB
+                <div class="sub-event-note">Modern Sichuan dry chili dishes</div>
+              </li>
+              <li class="sub-event food" data-place="Chiu Quon Bakery Chicago">Optional dessert: Chiu Quon
+                <div class="sub-event-note">Pineapple bun</div>
+              </li>
+              <li class="sub-event food" data-place="Hello Jasmine Chicago">Optional dessert: Hello Jasmine
+                <div class="sub-event-note">Bubble tea</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item act">
+            <div class="event-time">Afternoon</div>
+            <div class="event-title"><i class="fas fa-landmark"></i> Post-lunch options (before cruise):</div>
+            <ul class="sub-events">
+              <li class="sub-event act" data-place="Field Museum Chicago">Field Museum
+                <div class="sub-event-note">Grand hall & 'Sue' T. rex</div>
+              </li>
+              <li class="sub-event act" data-place="Shedd Aquarium Chicago">Shedd Aquarium
+                <div class="sub-event-note">Reef tunnel</div>
+              </li>
+              <li class="sub-event act" data-place="Buckingham Fountain Chicago">Buckingham Fountain
+                <div class="sub-event-note">Grant Park stroll</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item act" data-place="Chicago Riverwalk">
+            <div class="event-time">Evening</div>
+            <div class="event-title"><i class="fas fa-water"></i> Chicago Riverwalk stroll</div>
+            <div class="sub-event-note">Walk to cruise dock</div>
+          </li>
+          
+          <li class="event-item act" data-place="Wendella Boat Tours Chicago">
+            <div class="event-time">6:45 PM</div>
+            <div class="event-title"><i class="fas fa-ship"></i> Wendella Architecture Cruise</div>
+            <div class="sub-event-note">45-min scenic architecture tour on the Chicago River</div>
+          </li>
+          
+          <li class="event-item food" data-place="Bavette's Bar & Boeuf Chicago">
+            <div class="event-time">Night</div>
+            <div class="event-title"><i class="fas fa-utensils"></i> Dinner @ Bavette's Bar & Boeuf</div>
+            <div class="sub-event-note">Vintage steakhouse atmosphere</div>
+            <ul class="sub-events">
+              <li class="sub-event food" data-place="Firecakes Donuts Chicago">Optional dessert: Firecakes Donuts</li>
+            </ul>
+          </li>
+          
+          <li class="event-item drink">
+            <div class="event-title"><i class="fas fa-cocktail"></i> Post-dinner drinks & fun (choose):</div>
+            <ul class="sub-events">
+              <li class="sub-event drink" data-place="Off Color Brewing Mousetrap Chicago">Off Color Mousetrap
+                <div class="sub-event-note">Pastry stouts & wild ales</div>
+              </li>
+              <li class="sub-event drink" data-place="Konbini & Kanpai Chicago">Konbini & Kanpai
+                <div class="sub-event-note">Japanese beer cans</div>
+              </li>
+              <li class="sub-event drink" data-place="Beer Temple Chicago">Beer Temple Taproom
+                <div class="sub-event-note">30 rotating taps incl. JP imports</div>
+              </li>
+              <li class="sub-event drink" data-place="Green Mill Cocktail Lounge Chicago">Green Mill
+                <div class="sub-event-note">Historic jazz lounge</div>
+              </li>
+              <li class="sub-event drink" data-place="Chicago Magic Lounge">Chicago Magic Lounge
+                <div class="sub-event-note">Close-up magic & rum punches</div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="day-content" id="Sunday">
+        <div class="day-header">
+          <h2>Sunday, September 14</h2>
+          <p>Final explorations & departure</p>
+        </div>
+        
+        <ul class="event-list">
+          <li class="event-item food" data-place="Wildberry Pancakes and Cafe Chicago">
+            <div class="event-time">Morning</div>
+            <div class="event-title"><i class="fas fa-coffee"></i> Breakfast @ Wildberry Pancakes</div>
+            <div class="sub-event-note">Berry Bliss pancakes and breakfast specialties</div>
+          </li>
+          
+          <li class="event-item act">
+            <div class="event-time">Late Morning</div>
+            <div class="event-title"><i class="fas fa-university"></i> Museum choice (pick one):</div>
+            <ul class="sub-events">
+              <li class="sub-event act" data-place="Museum of Contemporary Art Chicago">Museum of Contemporary Art
+                <div class="sub-event-note">Opens at 10 AM</div>
+              </li>
+              <li class="sub-event act" data-place="Field Museum Chicago">Field Museum
+                <div class="sub-event-note">Natural history</div>
+              </li>
+              <li class="sub-event act" data-place="Shedd Aquarium Chicago">Shedd Aquarium
+                <div class="sub-event-note">Belugas, coral reef</div>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="event-item act" data-place="Water Tower Place Chicago">
+            <div class="event-time">Midday</div>
+            <div class="event-title"><i class="fas fa-shopping-bag"></i> Water Tower Place & Garrett Popcorn</div>
+            <div class="sub-event-note">Last-minute shopping</div>
+          </li>
+          
+          <li class="event-item act" data-place="O'Hare International Airport Chicago">
+            <div class="event-time">12:30 PM</div>
+            <div class="event-title"><i class="fas fa-plane-departure"></i> Depart for ORD</div>
+            <div class="sub-event-note">Allow 45 min drive + TSA time</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div id="map-container">
+      <div id="map"></div>
+      
+      <div class="map-controls">
+        <button id="traffic-toggle" class="map-btn" title="Toggle Traffic">
+          <i class="fas fa-car"></i>
+        </button>
+        <button id="transit-toggle" class="map-btn" title="Toggle Transit">
+          <i class="fas fa-subway"></i>
+        </button>
+        <button id="weather-toggle" class="map-btn" title="Toggle Weather">
+          <i class="fas fa-cloud-sun"></i>
+        </button>
+      </div>
+      
+      <div class="label-toggle">
+        <span class="toggle-label">Labels</span>
+        <label class="switch">
+          <input type="checkbox" id="label-toggle-checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <button id="current-location" class="current-location-btn" title="Find My Location">
+        <i class="fas fa-location-crosshairs"></i>
+      </button>
+      
+      <button id="next-destination" class="next-destination-btn">
+        <i class="fas fa-arrow-right"></i> <span class="next-destination-text">Next Stop</span>
+      </button>
+      
+      <div class="map-legend">
+        <div class="legend-title">
+          <span>PLACE CATEGORIES</span>
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #e74c3c"></span>
+          <span class="legend-label">Food & Restaurants</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #27ae60"></span>
+          <span class="legend-label">Activities & Sights</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #9b59b6"></span>
+          <span class="legend-label">Drinks & Nightlife</span>
+        </div>
+      </div>
+      
+      <div class="weather-widget">
+        <i class="fas fa-cloud-sun"></i>
+        <span id="weather-info">Loading weather...</span>
+      </div>
+      
+      <div class="travel-info-panel hidden">
+        <div class="travel-info-header">
+          <h3>Travel to Next Location</h3>
+          <button class="travel-info-close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="travel-info-content">
+          <p><i class="fas fa-map-marker-alt"></i> <strong>To:</strong> <span id="next-location-name">Next location</span></p>
+          <p><i class="fas fa-clock"></i> <strong>ETA:</strong> <span id="next-location-time">Calculating...</span></p>
+          <p><i class="fas fa-road"></i> <strong>Distance:</strong> <span id="next-location-distance">Calculating...</span></p>
+          <p><i class="fas fa-traffic-light"></i> <strong>Traffic:</strong> <span id="traffic-status">Checking...</span></p>
+          
+          <div class="travel-mode-options">
+            <button class="travel-mode-btn active" data-mode="DRIVING">
+              <i class="fas fa-car"></i>
+              <span>Drive</span>
+            </button>
+            <button class="travel-mode-btn" data-mode="TRANSIT">
+              <i class="fas fa-subway"></i>
+              <span>Transit</span>
+            </button>
+            <button class="travel-mode-btn" data-mode="WALKING">
+              <i class="fas fa-walking"></i>
+              <span>Walk</span>
+            </button>
+            <button class="travel-mode-btn" data-mode="BICYCLING">
+              <i class="fas fa-bicycle"></i>
+              <span>Bike</span>
+            </button>
+          </div>
+          
+          <button class="navigate-btn">
+            <i class="fas fa-directions"></i> Get Directions
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Chicago Trip Itinerary | September 11-14, 2023 | Explore the best of The Windy City
+  </div>
+
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDDvNENjvUxZ1iw9O0jge6UiV32DApUWw&libraries=places"></script>
+  <script>
+    // Global variables
+    var map;
+    var placesService;
+    var geocoder;
+    var markers = {};
+    var markerLabels = {};
+    var activeInfoWindow = null;
+    var currentDay = "Thursday";
+    var directionsService;
+    var directionsRenderer;
+    var trafficLayer;
+    var transitLayer;
+    var currentPositionMarker = null;
+    var watchPositionId = null;
+    var weatherShown = true;
+    var currentLocation = null;
+    var activeMarker = null;
+    var nextLocationIndex = 0;
+    var isTrafficVisible = false;
+    var isTransitVisible = false;
+    var currentTravelMode = "DRIVING";
+    var sidebarCollapsed = false;
+    var dayPlaceData = {};
+    var placeCache = {};
+    var requestQueue = [];
+    var processingQueue = false;
+    var showLabels = true;
+    var touchStartY = 0;
+    var pullThreshold = 70;
+    var isPulling = false;
+    var swipeStartX = 0;
+    var swipeThreshold = 100;
+    var currentDayIndex = 0;
+    var days = ["Thursday", "Friday", "Saturday", "Sunday"];
+    var offlineMode = false;
+    var lastActiveEvent = null;
+    var visibleInfoWindow = null;
+    
+    // Colors for different categories
+    var colors = {
+      food: "#e74c3c",
+      activity: "#27ae60",
+      drink: "#9b59b6"
+    };
+    
+    // Complete data structure with all places from itinerary
+    var itineraryData = [
+      // Thursday
+      ['Thursday', 'O\'Hare International Airport', 'airport', 'activity', '2:30 PM'],
+      ['Thursday', 'Park Hyatt Chicago', 'hotel', 'activity', '3:30 PM'],
+      ['Thursday', 'Pequod\'s Pizza', 'restaurant', 'food', 'Lunch'],
+      ['Thursday', 'Do-Rite Donuts', 'restaurant', 'food', 'Dessert'],
+      ['Thursday', 'Oak Street Beach', 'beach', 'activity', 'Afternoon'],
+      ['Thursday', '360 CHICAGO Observation Deck', 'attraction', 'activity', 'Afternoon'],
+      ['Thursday', 'Willis Tower Skydeck', 'attraction', 'activity', 'Afternoon'],
+      ['Thursday', 'Au Cheval', 'restaurant', 'food', 'Dinner'],
+      ['Thursday', 'Small Cheval', 'restaurant', 'food', 'Dinner'],
+      ['Thursday', 'Jeni\'s Splendid Ice Creams', 'restaurant', 'food', 'Dessert'],
+      ['Thursday', 'Konbini & Kanpai', 'bar', 'drink', 'Evening'],
+      ['Thursday', 'Beer Temple Taproom', 'bar', 'drink', 'Evening'],
+      ['Thursday', 'Three Dots and a Dash', 'bar', 'drink', 'Evening'],
+      ['Thursday', 'Cindy\'s Rooftop', 'bar', 'drink', 'Evening'],
+
+      // Friday
+      ['Friday', 'Luella\'s Southern Kitchen', 'restaurant', 'food', 'Morning'],
+      ['Friday', 'Montrose Point Bird Sanctuary', 'park', 'activity', 'Mid-morning'],
+      ['Friday', 'Garfield Park Conservatory', 'park', 'activity', 'Mid-morning'],
+      ['Friday', 'Andersonville', 'neighborhood', 'activity', 'Mid-morning'],
+      ['Friday', 'Lincoln Square', 'neighborhood', 'activity', 'Mid-morning'],
+      ['Friday', 'Cafe Ba-Ba-Reeba!', 'restaurant', 'food', 'Lunch'],
+      ['Friday', 'The Purple Pig', 'restaurant', 'food', 'Lunch'],
+      ['Friday', 'Vanille Patisserie', 'bakery', 'food', 'Dessert'],
+      ['Friday', 'Millennium Park', 'park', 'activity', 'Afternoon'],
+      ['Friday', 'Chicago Cultural Center', 'museum', 'activity', 'Afternoon'],
+      ['Friday', 'Art Institute of Chicago', 'museum', 'activity', 'Afternoon'],
+      ['Friday', 'Maggie Daley Park', 'park', 'activity', 'Afternoon'],
+      ['Friday', 'Chicago History Museum', 'museum', 'activity', 'Afternoon'],
+      ['Friday', 'Virtue Restaurant', 'restaurant', 'food', 'Dinner'],
+      ['Friday', 'Obelix', 'restaurant', 'food', 'Dinner'],
+      ['Friday', 'BomboBar', 'restaurant', 'food', 'Dessert'],
+      ['Friday', 'Bar Avec', 'bar', 'drink', 'Evening'],
+      ['Friday', 'Shogun Sake', 'bar', 'drink', 'Evening'],
+      ['Friday', 'Murasaki Sake Lounge', 'bar', 'drink', 'Evening'],
+      ['Friday', 'Emporium Arcade Bar', 'bar', 'drink', 'Evening'],
+      ['Friday', 'Second City', 'theater', 'activity', 'Evening'],
+
+      // Saturday
+      ['Saturday', 'Kasama', 'restaurant', 'food', 'Morning'],
+      ['Saturday', 'Chinatown Chicago', 'neighborhood', 'activity', 'Mid-morning'],
+      ['Saturday', 'Ping Tom Memorial Park', 'park', 'activity', 'Mid-morning'],
+      ['Saturday', 'Chinatown Chicago Zodiac Square', 'attraction', 'activity', 'Mid-morning'],
+      ['Saturday', 'Pui Tak Center', 'attraction', 'activity', 'Mid-morning'],
+      ['Saturday', 'Ten Ren Tea', 'shop', 'activity', 'Mid-morning'],
+      ['Saturday', 'QXY Dumplings', 'restaurant', 'food', 'Lunch'],
+      ['Saturday', 'MCCB', 'restaurant', 'food', 'Lunch'],
+      ['Saturday', 'Chiu Quon Bakery', 'bakery', 'food', 'Dessert'],
+      ['Saturday', 'Hello Jasmine', 'cafe', 'food', 'Dessert'],
+      ['Saturday', 'Field Museum', 'museum', 'activity', 'Afternoon'],
+      ['Saturday', 'Shedd Aquarium', 'aquarium', 'activity', 'Afternoon'],
+      ['Saturday', 'Buckingham Fountain', 'attraction', 'activity', 'Afternoon'],
+      ['Saturday', 'Chicago Riverwalk', 'attraction', 'activity', 'Evening'],
+      ['Saturday', 'Wendella Boat Tours', 'attraction', 'activity', '6:45 PM'],
+      ['Saturday', 'Bavette\'s Bar & Boeuf', 'restaurant', 'food', 'Dinner'],
+      ['Saturday', 'Firecakes Donuts', 'bakery', 'food', 'Dessert'],
+      ['Saturday', 'Off Color Brewing Mousetrap', 'brewery', 'drink', 'Evening'],
+      ['Saturday', 'Green Mill Cocktail Lounge', 'bar', 'drink', 'Evening'],
+      ['Saturday', 'Chicago Magic Lounge', 'entertainment', 'drink', 'Evening'],
+
+      // Sunday
+      ['Sunday', 'Wildberry Pancakes and Cafe', 'restaurant', 'food', 'Morning'],
+      ['Sunday', 'Museum of Contemporary Art', 'museum', 'activity', '10:00 AM'],
+      ['Sunday', 'Field Museum', 'museum', 'activity', 'Morning'],
+      ['Sunday', 'Shedd Aquarium', 'aquarium', 'activity', 'Morning'],
+      ['Sunday', 'Water Tower Place', 'shopping_mall', 'activity', 'Midday'],
+      ['Sunday', 'Garrett Popcorn', 'shop', 'food', 'Midday'],
+      ['Sunday', 'O\'Hare International Airport', 'airport', 'activity', '12:30 PM']
+    ];
+    
+    // Detect online/offline status
+    window.addEventListener('online', function() {
+      offlineMode = false;
+      document.querySelector('.offline-indicator').classList.remove('visible');
+      if (map) {
+        showToast('Back online! Map data refreshed.', 'success');
+        google.maps.event.trigger(map, 'resize');
+      }
+    });
+    
+    window.addEventListener('offline', function() {
+      offlineMode = true;
+      document.querySelector('.offline-indicator').classList.add('visible');
+      showToast('You are offline. Some features may be limited.', 'warning');
+    });
+    
+    // Check if we're offline when starting
+    if (!navigator.onLine) {
+      offlineMode = true;
+      setTimeout(function() {
+        document.querySelector('.offline-indicator').classList.add('visible');
+      }, 1000);
+    }
+    
+    // Initialize the map and functionality when document is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize the map
+      initMap();
+      
+      // Set up event listeners
+      setupEventListeners();
+      
+      // Load weather data
+      getWeatherData();
+      
+      // Start processing places in batches
+      findPlacesInBatches();
+      
+      // Initialize touch handling for pull-to-refresh and swipe between days
+      initTouchHandling();
+      
+      // Set up service worker for offline support
+      setupServiceWorker();
+    });
+    
+    // Initialize Google Maps
+    function initMap() {
+      // Create directions service for route calculations
+      directionsService = new google.maps.DirectionsService();
+      
+      // Create geocoder service
+      geocoder = new google.maps.Geocoder();
+      
+      // Initialize the map centered on Chicago
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 41.878, lng: -87.629 },
+        zoom: 12,
+        mapTypeControl: false,
+        streetViewControl: true,
+        fullscreenControl: false, // Disable fullscreen control which causes issues on iOS
+        zoomControl: true,
+        gestureHandling: 'greedy', // Improves map interaction on mobile
+        styles: [
+          {
+            "featureType": "poi.business",
+            "stylers": [{ "visibility": "off" }]
+          },
+          {
+            "featureType": "poi.park",
+            "elementType": "labels.text",
+            "stylers": [{ "visibility": "off" }]
+          }
+        ]
+      });
+      
+      // Create Places service
+      placesService = new google.maps.places.PlacesService(map);
+      
+      // Create traffic and transit layers
+      trafficLayer = new google.maps.TrafficLayer();
+      transitLayer = new google.maps.TransitLayer();
+      
+      // Create directions renderer
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        suppressMarkers: true,
+        polylineOptions: {
+          strokeColor: '#0277bd',
+          strokeWeight: 5,
+          strokeOpacity: 0.7
+        }
+      });
+      directionsRenderer.setMap(map);
+      
+      // Initialize day place data
+      for (var i = 0; i < days.length; i++) {
+        dayPlaceData[days[i]] = [];
+      }
+      
+      // Initialize with day index
+      currentDayIndex = days.indexOf(currentDay);
+      if (currentDayIndex === -1) currentDayIndex = 0;
+    }
+    
+    // Service worker setup for offline capabilities
+    function setupServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+        });
+      }
+    }
+    
+    // Touch handling for pull-to-refresh and day swiping
+    function initTouchHandling() {
+      var itineraryEl = document.getElementById('itinerary');
+      var currentContent = document.querySelector('.day-content.active');
+      var pullIndicator = document.querySelector('.pull-indicator');
+      
+      // Touch start
+      itineraryEl.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
+        swipeStartX = e.touches[0].clientX;
+        
+        // Check if at top of scroll
+        if (currentContent.scrollTop <= 0) {
+          isPulling = true;
+        }
+      }, { passive: true });
+      
+      // Touch move
+      itineraryEl.addEventListener('touchmove', function(e) {
+        if (!isPulling) return;
+        
+        var touchY = e.touches[0].clientY;
+        var pullDistance = touchY - touchStartY;
+        
+        // Only allow pull-down
+        if (pullDistance > 0 && pullDistance < pullThreshold && currentContent.scrollTop <= 0) {
+          pullIndicator.style.transform = 'translateY(' + (-pullThreshold + pullDistance) + 'px)';
+        }
+        
+        // Handle horizontal swipe for day changing
+        var touchX = e.touches[0].clientX;
+        var swipeDistance = touchX - swipeStartX;
+        
+        if (Math.abs(swipeDistance) > swipeThreshold) {
+          if (swipeDistance > 0 && currentDayIndex > 0) {
+            // Previous day (swipe right)
+            switchToDay(currentDayIndex - 1, 'left');
+            swipeStartX = touchX; // Reset to avoid multiple triggers
+          } else if (swipeDistance < 0 && currentDayIndex < days.length - 1) {
+            // Next day (swipe left)
+            switchToDay(currentDayIndex + 1, 'right');
+            swipeStartX = touchX; // Reset to avoid multiple triggers
+          }
+        }
+        
+      }, { passive: true });
+      
+      // Touch end
+      itineraryEl.addEventListener('touchend', function(e) {
+        if (!isPulling) return;
+        
+        var touchY = e.changedTouches[0].clientY;
+        var pullDistance = touchY - touchStartY;
+        
+        if (pullDistance > pullThreshold && currentContent.scrollTop <= 0) {
+          // Show refreshing state
+          pullIndicator.querySelector('span').textContent = 'Refreshing...';
+          pullIndicator.classList.add('visible');
+          
+          // Perform refresh
+          refreshData();
+        }
+        
+        // Reset pull state
+        setTimeout(function() {
+          pullIndicator.style.transform = 'translateY(-100%)';
+          pullIndicator.classList.remove('visible');
+          pullIndicator.querySelector('span').textContent = 'Release to refresh';
+          isPulling = false;
+        }, 300);
+      }, { passive: true });
+    }
+    
+    // Switch to a specific day by index
+    function switchToDay(index, direction) {
+      if (index < 0 || index >= days.length) return;
+      
+      var currentTab = document.querySelector('.day-tab.active');
+      var newTab = document.querySelectorAll('.day-tab')[index];
+      var currentContent = document.querySelector('.day-content.active');
+      var newContent = document.getElementById(days[index]);
+      
+      // Remove active class from current
+      currentTab.classList.remove('active');
+      currentContent.classList.remove('active');
+      
+      // Set animation class based on direction
+      if (direction) {
+        currentContent.style.display = 'none'; // Hide immediately
+        newContent.style.display = 'block';
+        newContent.classList.add(direction === 'right' ? 'slide-right' : 'slide-left');
+        
+        // Remove animation class after animation completes
+        setTimeout(function() {
+          newContent.classList.remove('slide-right', 'slide-left');
+        }, 300);
+      }
+      
+      // Add active class to new tab and content
+      newTab.classList.add('active');
+      newContent.classList.add('active');
+      
+      // Update current day and index
+      currentDay = days[index];
+      currentDayIndex = index;
+      
+      // Show markers for this day
+      showDayMarkers(currentDay);
+      
+      // Reset next location index
+      nextLocationIndex = 0;
+      
+      // Clear any existing directions
+      directionsRenderer.setDirections({routes: []});
+      
+      // Update next destination button
+      updateNextDestinationButton();
+      
+      // Update weather display
+      if (window.weatherData && window.weatherData[currentDay]) {
+        updateWeatherDisplay(window.weatherData[currentDay]);
+      }
+    }
+    
+    // Refresh data 
+    function refreshData() {
+      // Show toast
+      showToast('Refreshing itinerary data...', 'info');
+      
+      // Re-fetch places for the current day
+      var dayData = itineraryData.filter(function(item) {
+        return item[0] === currentDay;
+      });
+      
+      // Clear markers for this day
+      Object.keys(markers).forEach(function(key) {
+        if (key.startsWith(currentDay)) {
+          markers[key].setMap(null);
+          delete markers[key];
+        }
+      });
+      
+      // Clear day place data
+      dayPlaceData[currentDay] = [];
+      
+      // Process day's places
+      var processed = 0;
+      var total = dayData.length;
+      
+      function processPlace(index) {
+        if (index >= dayData.length) {
+          // Done refreshing
+          showDayMarkers(currentDay);
+          showToast('Itinerary refreshed!', 'success');
+          return;
+        }
+        
+        var item = dayData[index];
+        var name = item[1];
+        var type = item[2];
+        var category = item[3];
+        var time = item[4];
+        
+        // Clear cache for this place
+        delete placeCache[name];
+        
+        // Find place
+        findPlace(name, function(place) {
+          if (place) {
+            // Add to day's place data
+            dayPlaceData[currentDay].push({
+              name: name,
+              place: place,
+              category: category,
+              type: type,
+              time: time
+            });
+            
+            // Create marker
+            createMarker(currentDay, name, place, category, type, time);
+          }
+          
+          // Process next place
+          setTimeout(function() {
+            processPlace(index + 1);
+          }, 100);
+        });
+      }
+      
+      processPlace(0);
+    }
+    
+    // Set up event listeners for UI interaction
+    function setupEventListeners() {
+      // Day tab switching
+      document.querySelectorAll('.day-tab').forEach(function(tab, index) {
+        tab.addEventListener('click', function() {
+          switchToDay(index);
+        });
+      });
+      
+      // Toggle traffic layer
+      document.getElementById('traffic-toggle').addEventListener('click', function() {
+        this.classList.toggle('active');
+        isTrafficVisible = !isTrafficVisible;
+        
+        if (isTrafficVisible) {
+          trafficLayer.setMap(map);
+          showToast('Traffic layer enabled', 'success');
+        } else {
+          trafficLayer.setMap(null);
+          showToast('Traffic layer disabled', 'info');
+        }
+      });
+      
+      // Toggle transit layer
+      document.getElementById('transit-toggle').addEventListener('click', function() {
+        this.classList.toggle('active');
+        isTransitVisible = !isTransitVisible;
+        
+        if (isTransitVisible) {
+          transitLayer.setMap(map);
+          showToast('Transit layer enabled', 'success');
+        } else {
+          transitLayer.setMap(null);
+          showToast('Transit layer disabled', 'info');
+        }
+      });
+      
+      // Toggle weather widget
+      document.getElementById('weather-toggle').addEventListener('click', function() {
+        this.classList.toggle('active');
+        weatherShown = !weatherShown;
+        
+        var weatherWidget = document.querySelector('.weather-widget');
+        if (weatherShown) {
+          weatherWidget.style.display = 'flex';
+        } else {
+          weatherWidget.style.display = 'none';
+        }
+      });
+      
+      // Toggle map labels
+      document.getElementById('label-toggle-checkbox').addEventListener('change', function() {
+        showLabels = this.checked;
+        toggleMapLabels(showLabels);
+      });
+      
+      // Current location button
+      document.getElementById('current-location').addEventListener('click', function() {
+        getCurrentLocation();
+      });
+      
+      // Next destination button
+      document.getElementById('next-destination').addEventListener('click', function() {
+        showNextDestination();
+      });
+      
+      // Close travel info panel
+      document.querySelector('.travel-info-close').addEventListener('click', function() {
+        document.querySelector('.travel-info-panel').classList.add('hidden');
+      });
+      
+      // Travel mode buttons
+      document.querySelectorAll('.travel-mode-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          // Update active state
+          document.querySelectorAll('.travel-mode-btn').forEach(function(b) {
+            b.classList.remove('active');
+          });
+          this.classList.add('active');
+          
+          // Update travel mode
+          currentTravelMode = this.getAttribute('data-mode');
+          
+          // Recalculate route if panel is visible
+          if (!document.querySelector('.travel-info-panel').classList.contains('hidden') && activeMarker) {
+            calculateAndDisplayRoute(currentTravelMode);
+          }
+        });
+      });
+      
+      // Navigate button
+      document.querySelector('.navigate-btn').addEventListener('click', function() {
+        if (activeMarker && currentLocation) {
+          var destination = activeMarker.getPosition();
+          var url = 'https://www.google.com/maps/dir/?api=1&origin=' + 
+                   currentLocation.lat + ',' + currentLocation.lng + 
+                   '&destination=' + destination.lat() + ',' + destination.lng() + 
+                   '&travelmode=' + currentTravelMode.toLowerCase();
+          window.open(url, '_blank');
+        } else {
+          showToast('Cannot get directions. Please try again.', 'error');
+        }
+      });
+      
+      // Toggle sidebar
+      document.getElementById('toggle-sidebar').addEventListener('click', function() {
+        var itinerary = document.getElementById('itinerary');
+        var mapContainer = document.getElementById('map-container');
+        var icon = this.querySelector('i');
+        
+        sidebarCollapsed = !sidebarCollapsed;
+        
+        // Mobile layout
+        if (window.innerWidth <= 768) {
+          if (sidebarCollapsed) {
+            itinerary.style.height = '60px';
+            itinerary.classList.add('collapsed');
+            mapContainer.style.height = 'calc(100% - 60px)';
+            mapContainer.classList.add('expanded');
+            icon.className = 'fas fa-chevron-up';
+          } else {
+            itinerary.style.height = '50%';
+            itinerary.classList.remove('collapsed');
+            mapContainer.style.height = '50%';
+            mapContainer.classList.remove('expanded');
+            icon.className = 'fas fa-chevron-down';
+          }
+        } 
+        // Desktop layout
+        else {
+          if (sidebarCollapsed) {
+            itinerary.style.width = '0';
+            icon.className = 'fas fa-chevron-right';
+          } else {
+            itinerary.style.width = '40%';
+            icon.className = 'fas fa-chevron-left';
+          }
+        }
+        
+        // Force map resize
+        setTimeout(function() {
+          google.maps.event.trigger(map, 'resize');
+        }, 300);
+      });
+      
+      // Event item click to show on map
+      document.querySelectorAll('.event-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          // Store reference to previous active event
+          var previousActiveEvent = lastActiveEvent;
+          
+          // Remove active class from all items
+          document.querySelectorAll('.event-item').forEach(function(i) {
+            i.classList.remove('active');
+          });
+          
+          // Add active class to clicked item
+          this.classList.add('active');
+          lastActiveEvent = this;
+          
+          // Get place name from data attribute
+          var placeName = this.getAttribute('data-place');
+          
+          if (placeName) {
+            var markerKey = currentDay + '-' + placeName;
+            var marker = markers[markerKey];
+            
+            if (marker) {
+              // Center map on marker
+              map.setCenter(marker.getPosition());
+              map.setZoom(16);
+              
+              // Trigger marker click
+              google.maps.event.trigger(marker, 'click');
+            } else {
+              // If marker doesn't exist yet, find place and create marker
+              if (!this.getAttribute('data-finding')) {
+                this.setAttribute('data-finding', 'true');
+                
+                findPlace(placeName, function(place) {
+                  if (place) {
+                    createMarker(currentDay, placeName, place, getCategory(item), getItemType(item), getItemTime(item));
+                    
+                    // Now try to click the marker
+                    var newMarker = markers[markerKey];
+                    if (newMarker) {
+                      map.setCenter(newMarker.getPosition());
+                      map.setZoom(16);
+                      google.maps.event.trigger(newMarker, 'click');
+                    }
+                  }
+                  
+                  item.removeAttribute('data-finding');
+                });
+              }
+            }
+          } else {
+            // If no specific place, handle parent element with sub-events
+            var firstSubEvent = this.querySelector('.sub-event[data-place]');
+            if (firstSubEvent) {
+              // If we're clicking on the same event again, show different sub-event
+              if (previousActiveEvent === this && visibleInfoWindow) {
+                visibleInfoWindow.close();
+                visibleInfoWindow = null;
+                
+                var subEvents = this.querySelectorAll('.sub-event[data-place]');
+                var nextIndex = 0;
+                
+                for (var i = 0; i < subEvents.length; i++) {
+                  var subPlaceName = subEvents[i].getAttribute('data-place');
+                  var subMarkerKey = currentDay + '-' + subPlaceName;
+                  
+                  if (markers[subMarkerKey] === activeMarker) {
+                    nextIndex = (i + 1) % subEvents.length;
+                    break;
+                  }
+                }
+                
+                var nextSubEvent = subEvents[nextIndex];
+                if (nextSubEvent) {
+                  simulateClick(nextSubEvent);
+                }
+              } else {
+                // First time clicking, show first sub-event
+                simulateClick(firstSubEvent);
+              }
+            }
+          }
+        });
+      });
+      
+      // Sub-event click
+      document.querySelectorAll('.sub-event').forEach(function(item) {
+        if (item.getAttribute('data-place')) {
+          item.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent parent event from triggering
+            
+            var placeName = this.getAttribute('data-place');
+            
+            if (placeName) {
+              var found = false;
+              
+              // Look for the marker in the current day first
+              var markerKey = currentDay + '-' + placeName;
+              var marker = markers[markerKey];
+              
+              if (marker) {
+                map.setCenter(marker.getPosition());
+                map.setZoom(16);
+                google.maps.event.trigger(marker, 'click');
+                found = true;
+              } else {
+                // Look in all days
+                for (var day in markers) {
+                  if (markers.hasOwnProperty(day)) {
+                    var dayName = day.split('-')[0];
+                    var markerPlaceName = day.split('-').slice(1).join('-');
+                    
+                    if (markerPlaceName.includes(placeName)) {
+                      marker = markers[day];
+                      
+                      if (marker) {
+                        map.setCenter(marker.getPosition());
+                        map.setZoom(16);
+                        google.maps.event.trigger(marker, 'click');
+                        found = true;
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+              
+              // If not found, try to find the place and create marker
+              if (!found && !this.getAttribute('data-finding')) {
+                this.setAttribute('data-finding', 'true');
+                
+                findPlace(placeName, function(place) {
+                  if (place) {
+                    createMarker(currentDay, placeName, place, getCategory(item), getItemType(item), getItemTime(item));
+                    
+                    // Now try to click the marker
+                    var newMarker = markers[currentDay + '-' + placeName];
+                    if (newMarker) {
+                      map.setCenter(newMarker.getPosition());
+                      map.setZoom(16);
+                      google.maps.event.trigger(newMarker, 'click');
+                    }
+                  }
+                  
+                  item.removeAttribute('data-finding');
+                });
+              }
+            }
+          });
+        }
+      });
+      
+      // Handle window resize
+      window.addEventListener('resize', function() {
+        // Update layout
+        if (window.innerWidth <= 768) {
+          // Mobile layout
+          document.getElementById('toggle-sidebar').querySelector('i').className = 
+            sidebarCollapsed ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+        } else {
+          // Desktop layout
+          document.getElementById('toggle-sidebar').querySelector('i').className = 
+            sidebarCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left';
+        }
+        
+        // Trigger map resize event to fix rendering issues
+        google.maps.event.trigger(map, 'resize');
+        
+        // Reposition map labels
+        if (showLabels) {
+          updateMapLabels();
+        }
+      });
+      
+      // Safari-specific fixes
+      if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+        // Double-touch fix for Safari
+        document.querySelectorAll('.event-item, .sub-event, .map-btn, .travel-mode-btn, .navigate-btn')
+          .forEach(function(el) {
+            // Add a no-op click handler to create tap targets
+            el.addEventListener('click', function() {});
+            el.addEventListener('touchstart', function() {}, {passive: true});
+          });
+      }
+    }
+    
+    // Utility functions for extracting item info
+    function getCategory(el) {
+      if (el.classList.contains('food')) return 'food';
+      if (el.classList.contains('act')) return 'activity';
+      if (el.classList.contains('drink')) return 'drink';
+      
+      // Check parent
+      if (el.parentElement && el.parentElement.classList.contains('sub-events')) {
+        var parent = el.parentElement.parentElement;
+        if (parent.classList.contains('food')) return 'food';
+        if (parent.classList.contains('act')) return 'activity';
+        if (parent.classList.contains('drink')) return 'drink';
+      }
+      
+      return 'activity'; // Default
+    }
+    
+    function getItemType(el) {
+      // Try to extract type from class or context
+      if (el.classList.contains('food') || el.closest('.food')) return 'restaurant';
+      if (el.classList.contains('drink') || el.closest('.drink')) return 'bar';
+      
+      // Extract from context
+      var title = el.querySelector('.event-title');
+      if (title) {
+        var text = title.textContent.toLowerCase();
+        if (text.includes('hotel') || text.includes('check-in')) return 'hotel';
+        if (text.includes('museum')) return 'museum';
+        if (text.includes('park')) return 'park';
+        if (text.includes('beach')) return 'beach';
+      }
+      
+      return 'attraction'; // Default
+    }
+    
+    function getItemTime(el) {
+      var timeEl = el.querySelector('.event-time');
+      return timeEl ? timeEl.textContent : '';
+    }
+    
+    // Simulate click event
+    function simulateClick(el) {
+      // Create and dispatch a click event
+      var evt = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      el.dispatchEvent(evt);
+    }
+    
+    // Process places in batches to improve loading time
+    function findPlacesInBatches() {
+      // Show loading indicator
+      document.getElementById('loading').style.display = 'flex';
+      
+      // Show progress bar
+      var progressContainer = document.getElementById('progress');
+      progressContainer.classList.add('visible');
+      
+      // Check if we're in offline mode
+      if (offlineMode) {
+        document.getElementById('loading').style.display = 'none';
+        progressContainer.classList.remove('visible');
+        showToast('Loading from stored data while offline', 'info');
+        return;
+      }
+      
+      // Initialize counters
+      var processed = 0;
+      var total = itineraryData.length;
+      var batchSize = 3; // Process 3 places at a time
+      
+      // Clear and prepare the request queue
+      var placesToProcess = [];
+      
+      // Group places by day for better organization
+      itineraryData.forEach(function(placeInfo) {
+        placesToProcess.push({
+          day: placeInfo[0],
+          name: placeInfo[1],
+          type: placeInfo[2],
+          category: placeInfo[3],
+          time: placeInfo[4]
+        });
+      });
+      
+      // Process batches
+      function processBatch(startIndex) {
+        if (startIndex >= placesToProcess.length) {
+          // All done
+          document.getElementById('loading').style.display = 'none';
+          progressContainer.classList.remove('visible');
+          showDayMarkers(currentDay);
+          updateNextDestinationButton();
+          showToast('All locations loaded!', 'success');
+          return;
+        }
+        
+        // Get batch
+        var endIndex = Math.min(startIndex + batchSize, placesToProcess.length);
+        var batch = placesToProcess.slice(startIndex, endIndex);
+        var batchCompleted = 0;
+        
+        // Process each item in parallel
+        batch.forEach(function(item) {
+          findPlace(item.name, function(place) {
+            if (place) {
+              placeCache[item.name] = place;
+              
+              dayPlaceData[item.day].push({
+                name: item.name,
+                place: place,
+                category: item.category,
+                type: item.type,
+                time: item.time
+              });
+              
+              createMarker(item.day, item.name, place, item.category, item.type, item.time);
+            }
+            
+            // Update progress
+            processed++;
+            var percentage = Math.floor((processed / total) * 100);
+            document.querySelector('.progress-fill').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = percentage + '%';
+            
+            // Check if batch complete
+            batchCompleted++;
+            if (batchCompleted === batch.length) {
+              // Process next batch after a short delay
+              setTimeout(function() {
+                processBatch(endIndex);
+              }, 200);
+            }
+          });
+        });
+      }
+      
+      // Start with first batch
+      processBatch(0);
+    }
+    
+    // Find a place using the Places API with fallbacks
+    function findPlace(name, callback) {
+      // Check cache first
+      if (placeCache[name]) {
+        callback(placeCache[name]);
+        return;
+      }
+      
+      // Check if offline
+      if (offlineMode) {
+        // Return a basic stub place
+        callback({
+          name: name,
+          geometry: {
+            location: new google.maps.LatLng(41.878, -87.629) // Chicago center as fallback
+          },
+          formatted_address: 'Chicago, IL',
+          place_id: 'offline-' + name.replace(/[^a-z0-9]/gi, '')
+        });
+        return;
+      }
+      
+      var query = name + ' Chicago IL';
+      
+      // First try: Specific query with fields
+      placesService.findPlaceFromQuery({
+        query: query,
+        fields: ['name', 'geometry', 'formatted_address', 'place_id', 'types', 'photos', 'rating', 'opening_hours']
+      }, function(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
+          // Success - return the first result
+          callback(results[0]);
+        } else {
+          // Second try: Text search with location context
+          placesService.textSearch({
+            query: name,
+            location: new google.maps.LatLng(41.878, -87.629), // Chicago center
+            radius: 10000 // 10km radius
+          }, function(results, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
+              // Success on second attempt
+              callback(results[0]);
+            } else {
+              // Last resort: Geocoding
+              geocoder.geocode({ address: query }, function(results, status) {
+                if (status === 'OK' && results && results.length > 0) {
+                  // Create a basic place object from geocoding result
+                  var place = {
+                    name: name,
+                    geometry: results[0].geometry,
+                    formatted_address: results[0].formatted_address,
+                    place_id: results[0].place_id
+                  };
+                  callback(place);
+                } else {
+                  // All attempts failed - create stub place
+                  var stubPlace = {
+                    name: name,
+                    geometry: {
+                      location: new google.maps.LatLng(41.878, -87.629) // Chicago center as fallback
+                    },
+                    formatted_address: 'Chicago, IL (exact location unknown)',
+                    place_id: 'unknown-' + Date.now()
+                  };
+                  console.error('Failed to find place: ' + name);
+                  callback(stubPlace);
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+    
+    // Create a marker for a place
+    function createMarker(day, name, place, category, type, time) {
+      var markerKey = day + '-' + name;
+      
+      // Skip if marker already exists
+      if (markers[markerKey]) return;
+      
+      // Create a marker
+      var marker = new google.maps.Marker({
+        position: place.geometry.location,
+        map: null,
+        title: name,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: colors[category] || '#3498db',
+          fillOpacity: 0.9,
+          strokeWeight: 2,
+          strokeColor: 'white',
+          scale: 10
+        },
+        animation: google.maps.Animation.DROP
+      });
+      
+      // Generate stars display based on rating
+      var starsHTML = '';
+      if (place.rating) {
+        var fullStars = Math.floor(place.rating);
+        var halfStar = place.rating % 1 >= 0.5;
+        
+        for (var i = 0; i < fullStars; i++) {
+          starsHTML += '<i class="fas fa-star"></i>';
+        }
+        
+        if (halfStar) {
+          starsHTML += '<i class="fas fa-star-half-alt"></i>';
+        }
+        
+        var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+        for (var i = 0; i < emptyStars; i++) {
+          starsHTML += '<i class="far fa-star"></i>';
+        }
+      }
+      
+      // Get a photo URL if available
+      var photoUrl = '';
+      if (place.photos && place.photos.length > 0) {
+        try {
+          photoUrl = place.photos[0].getUrl({maxWidth: 200, maxHeight: 200});
+        } catch (e) {
+          // If photo URL fails, ignore
+          console.log("Couldn't load photo for: " + name);
+        }
+      }
+      
+      // Create info window content
+      var contentString = 
+        '<div class="custom-info-window">' +
+          '<div class="info-window-content">' +
+            '<h3>' + name + '</h3>' +
+            '<p><strong>' + type + '</strong>' + (time ? ' • <i class="far fa-clock"></i> ' + time : '') + '</p>' +
+            '<p><i class="fas fa-map-marker-alt"></i> ' + (place.formatted_address || 'Address unavailable') + '</p>' +
+            (place.rating ? 
+              '<div class="info-window-rating">' +
+                '<div class="stars">' + starsHTML + '</div>' +
+                '<span>' + place.rating + '</span>' +
+              '</div>' : '') +
+            (photoUrl ? '<img src="' + photoUrl + '" alt="' + name + '" style="width:100%; margin-top:8px; border-radius:4px;">' : '') +
+            '<div class="info-window-action">' +
+              '<button class="info-window-btn" onclick="showDirectionsToMarker(\'' + markerKey + '\')">' +
+                '<i class="fas fa-directions"></i> Directions' +
+              '</button>' +
+              '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(name) + '&query_place_id=' + place.place_id + '" target="_blank" class="info-window-btn" style="text-decoration:none;">' +
+                '<i class="fas fa-external-link-alt"></i> View on Maps' +
+              '</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      
+      var infoWindow = new google.maps.InfoWindow({
+        content: contentString,
+        maxWidth: 300
+      });
+      
+      // Add click listener to marker
+      marker.addListener('click', function() {
+        // Close any open info window
+        if (activeInfoWindow) {
+          activeInfoWindow.close();
+        }
+        
+        // Open this info window
+        infoWindow.open(map, marker);
+        activeInfoWindow = infoWindow;
+        visibleInfoWindow = infoWindow;
+        activeMarker = marker;
+        
+        // If we have current location, show directions panel
+        if (currentLocation) {
+          showTravelInfoPanel(marker, name);
+        }
+      });
+      
+      // Store marker reference
+      markers[markerKey] = marker;
+      
+      // Create map label if showing labels
+      if (showLabels) {
+        createMapLabel(marker, name, category);
+      }
+    }
+    
+    // Create a label for a marker
+    function createMapLabel(marker, name, category) {
+      var labelDiv = document.createElement('div');
+      labelDiv.className = 'map-label ' + category;
+      labelDiv.textContent = name;
+      
+      // Create map label overlay
+      var label = new LabelOverlay(marker.getPosition(), labelDiv);
+      label.setMap(map);
+      
+      // Store reference to label
+      markerLabels[marker.title] = label;
+      
+      // Show label with fade-in
+      setTimeout(function() {
+        labelDiv.style.opacity = '1';
+      }, 100);
+    }
+    
+    // Custom overlay for marker labels
+    function LabelOverlay(position, content) {
+      this.position = position;
+      this.content = content;
+    }
+    
+    LabelOverlay.prototype = new google.maps.OverlayView();
+    
+    LabelOverlay.prototype.onAdd = function() {
+      this.div = this.content;
+      var panes = this.getPanes();
+      panes.overlayMouseTarget.appendChild(this.div);
+    };
+    
+    LabelOverlay.prototype.draw = function() {
+      var projection = this.getProjection();
+      var position = projection.fromLatLngToDivPixel(this.position);
+      
+      this.div.style.left = position.x + 'px';
+      this.div.style.top = position.y + 'px';
+    };
+    
+    LabelOverlay.prototype.onRemove = function() {
+      this.div.parentNode.removeChild(this.div);
+      this.div = null;
+    };
+    
+    // Toggle visibility of all map labels
+    function toggleMapLabels(show) {
+      // Update all existing labels
+      for (var name in markerLabels) {
+        if (markerLabels.hasOwnProperty(name)) {
+          var label = markerLabels[name];
+          
+          if (show) {
+            label.setMap(map);
+            setTimeout(function(div) {
+              div.style.opacity = '1';
+            }, 10, label.content);
+          } else {
+            label.content.style.opacity = '0';
+            setTimeout(function(label) {
+              label.setMap(null);
+            }, 300, label);
+          }
+        }
+      }
+      
+      // If turning on and no labels exist yet, create them
+      if (show && Object.keys(markerLabels).length === 0) {
+        Object.keys(markers).forEach(function(key) {
+          if (key.startsWith(currentDay)) {
+            var marker = markers[key];
+            var name = marker.getTitle();
+            var category = getCategoryFromKey(key);
+            
+            createMapLabel(marker, name, category);
+          }
+        });
+      }
+    }
+    
+    // Update positions of all map labels (e.g. after zoom/pan)
+    function updateMapLabels() {
+      for (var name in markerLabels) {
+        if (markerLabels.hasOwnProperty(name)) {
+          var label = markerLabels[name];
+          label.draw();
+        }
+      }
+    }
+    
+    // Extract category from marker key
+    function getCategoryFromKey(key) {
+      var parts = key.split('-');
+      var day = parts[0];
+      var name = parts.slice(1).join('-');
+      
+      // Look up in itinerary data
+      for (var i = 0; i < itineraryData.length; i++) {
+        if (itineraryData[i][0] === day && itineraryData[i][1] === name) {
+          return itineraryData[i][3]; // category
+        }
+      }
+      
+      // Default
+      return 'activity';
+    }
+    
+    // Show markers for a specific day
+    function showDayMarkers(day) {
+      // Hide all markers
+      for (var key in markers) {
+        if (markers.hasOwnProperty(key)) {
+          markers[key].setMap(null);
+        }
+      }
+      
+      // Hide all labels
+      for (var name in markerLabels) {
+        if (markerLabels.hasOwnProperty(name)) {
+          markerLabels[name].setMap(null);
+          delete markerLabels[name]; // Remove reference
+        }
+      }
+      
+      // Close any open info window
+      if (activeInfoWindow) {
+        activeInfoWindow.close();
+        activeInfoWindow = null;
+      }
+      
+      // Show only markers for the selected day
+      var dayMarkers = [];
+      for (var key in markers) {
+        if (markers.hasOwnProperty(key)) {
+          if (key.startsWith(day)) {
+            markers[key].setMap(map);
+            dayMarkers.push(markers[key]);
+            
+            // Create label if showing labels
+            if (showLabels) {
+              var marker = markers[key];
+              var name = marker.getTitle();
+              var category = getCategoryFromKey(key);
+              createMapLabel(marker, name, category);
+            }
+          }
+        }
+      }
+      
+      // Fit map to these markers if there are any
+      if (dayMarkers.length > 0) {
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0; i < dayMarkers.length; i++) {
+          bounds.extend(dayMarkers[i].getPosition());
+        }
+        map.fitBounds(bounds, { padding: 70 });
+        
+        // Add listener for zoom/pan to update labels
+        google.maps.event.addListener(map, 'idle', function() {
+          if (showLabels) {
+            updateMapLabels();
+          }
+        });
+      }
+    }
+    
+    // Get current geolocation
+    function getCurrentLocation() {
+      if (navigator.geolocation) {
+        document.getElementById('loading').style.display = 'flex';
+        
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          
+          // Store current location
+          currentLocation = pos;
+          
+          // Add or update position marker
+          if (!currentPositionMarker) {
+            currentPositionMarker = new google.maps.Marker({
+              position: pos,
+              map: map,
+              title: 'Your location',
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#4285F4',
+                fillOpacity: 1,
+                strokeColor: '#ffffff',
+                strokeWeight: 2,
+                scale: 12
+              },
+              zIndex: 1000
+            });
+            
+            // Add accuracy circle
+            new google.maps.Circle({
+              map: map,
+              center: pos,
+              radius: position.coords.accuracy,
+              strokeColor: '#4285F4',
+              strokeOpacity: 0.2,
+              strokeWeight: 1,
+              fillColor: '#4285F4',
+              fillOpacity: 0.1
+            });
+            
+          } else {
+            currentPositionMarker.setPosition(pos);
+          }
+          
+          // Center map on position
+          map.setCenter(pos);
+          map.setZoom(15);
+          
+          document.getElementById('loading').style.display = 'none';
+          
+          // Calculate nearest attraction
+          findNearestAttraction(pos);
+          
+          // Start watching position for continuous updates
+          startWatchingPosition();
+          
+          showToast('Your location found!', 'success');
+          
+        }, function(error) {
+          document.getElementById('loading').style.display = 'none';
+          console.error('Error getting location:', error);
+          showToast('Could not get your location. Please check permissions.', 'error');
+        }, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        });
+      } else {
+        showToast('Geolocation is not supported by this browser.', 'error');
+      }
+    }
+    
+    // Start watching user position for continuous updates
+    function startWatchingPosition() {
+      if (watchPositionId) {
+        navigator.geolocation.clearWatch(watchPositionId);
+      }
+      
+      if (navigator.geolocation) {
+        watchPositionId = navigator.geolocation.watchPosition(function(position) {
+          var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          
+          // Update stored location
+          currentLocation = pos;
+          
+          // Update marker position
+          if (currentPositionMarker) {
+            currentPositionMarker.setPosition(pos);
+          }
+          
+        }, null, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 30000
+        });
+      }
+    }
+    
+    // Find the nearest attraction to the current location
+    function findNearestAttraction(position) {
+      var nearest = null;
+      var minDistance = Infinity;
+      
+      // Only check markers for the current day
+      for (var key in markers) {
+        if (markers.hasOwnProperty(key) && key.startsWith(currentDay)) {
+          var marker = markers[key];
+          var markerPos = marker.getPosition();
+          
+          // Calculate distance
+          var distance = google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng(position.lat, position.lng),
+            markerPos
+          );
+          
+          if (distance < minDistance) {
+            minDistance = distance;
+            nearest = marker;
+          }
+        }
+      }
+      
+      if (nearest) {
+        // Show toast with nearest attraction
+        var distance = (minDistance / 1000).toFixed(1); // Convert to km
+        showToast('Nearest: ' + nearest.getTitle() + ' (' + distance + ' km)', 'info');
+      }
+    }
+    
+    // Global function to show directions to a marker
+    window.showDirectionsToMarker = function(markerKey) {
+      var marker = markers[markerKey];
+      
+      if (marker) {
+        // Set as active marker
+        activeMarker = marker;
+        
+        if (currentLocation) {
+          // Calculate and display route
+          calculateAndDisplayRoute();
+          
+          // Show travel info panel
+          showTravelInfoPanel(marker, marker.getTitle());
+        } else {
+          // Prompt to get current location
+          showToast('Please share your location to get directions', 'info');
+          getCurrentLocation();
+        }
+      }
+    };
+    
+    // Calculate and display route between current location and destination
+    function calculateAndDisplayRoute(travelMode) {
+      if (!travelMode) {
+        travelMode = currentTravelMode;
+      }
+      
+      if (!currentLocation || !activeMarker) return;
+      
+      var destination = activeMarker.getPosition();
+      
+      directionsService.route({
+        origin: currentLocation,
+        destination: destination,
+        travelMode: google.maps.TravelMode[travelMode],
+        provideRouteAlternatives: false,
+        drivingOptions: {
+          departureTime: new Date(),
+          trafficModel: google.maps.TrafficModel.BEST_GUESS
+        }
+      })
+      .then(function(response) {
+        // Display the route on the map
+        directionsRenderer.setDirections(response);
+        
+        // Update travel info panel with new details
+        var route = response.routes[0];
+        var leg = route.legs[0];
+        
+        document.getElementById('next-location-time').textContent = leg.duration.text;
+        document.getElementById('next-location-distance').textContent = leg.distance.text;
+        
+        // Check if there is traffic info available
+        if (leg.duration_in_traffic) {
+          var trafficRatio = leg.duration_in_traffic.value / leg.duration.value;
+          var trafficStatus = 'Light';
+          var statusColor = 'green';
+          
+          if (trafficRatio > 1.5) {
+            trafficStatus = 'Heavy';
+            statusColor = 'red';
+          } else if (trafficRatio > 1.2) {
+            trafficStatus = 'Moderate';
+            statusColor = 'orange';
+          }
+          
+          document.getElementById('traffic-status').textContent = trafficStatus;
+          document.getElementById('traffic-status').style.color = statusColor;
+        } else {
+          document.getElementById('traffic-status').textContent = 'Unknown';
+          document.getElementById('traffic-status').style.color = '';
+        }
+      })
+      .catch(function(error) {
+        console.error('Directions request failed:', error);
+        showToast('Could not calculate directions', 'error');
+      });
+    }
+    
+    // Show the travel info panel with details about the next location
+    function showTravelInfoPanel(marker, name) {
+      // Update panel content
+      document.getElementById('next-location-name').textContent = name;
+      
+      // Calculate and show route
+      calculateAndDisplayRoute();
+      
+      // Show panel
+      document.querySelector('.travel-info-panel').classList.remove('hidden');
+    }
+    
+    // Show the next destination in the itinerary
+    function showNextDestination() {
+      // Get day places in order they appear in the itinerary
+      var dayPlaces = dayPlaceData[currentDay] || [];
+      
+      // If we have places for this day
+      if (dayPlaces.length > 0) {
+        // Get next destination
+        if (nextLocationIndex >= dayPlaces.length) {
+          nextLocationIndex = 0;
+        }
+        
+        var nextPlace = dayPlaces[nextLocationIndex];
+        nextLocationIndex++;
+        
+        // Update next destination button text
+        updateNextDestinationButton();
+        
+        // Find the marker
+        var markerKey = currentDay + '-' + nextPlace.name;
+        var nextMarker = markers[markerKey];
+        
+        if (nextMarker) {
+          // Trigger click on marker
+          google.maps.event.trigger(nextMarker, 'click');
+          
+          // Pan to marker
+          map.panTo(nextMarker.getPosition());
+          map.setZoom(16);
+        }
+      }
+    }
+    
+    // Update next destination button text
+    function updateNextDestinationButton() {
+      // Get day places in order they appear in the itinerary
+      var dayPlaces = dayPlaceData[currentDay] || [];
+      
+      // If we have places
+      if (dayPlaces.length > 0) {
+        // Get next destination
+        var index = nextLocationIndex;
+        if (index >= dayPlaces.length) {
+          index = 0;
+        }
+        
+        var nextPlace = dayPlaces[index];
+        
+        // Update button text
+        document.querySelector('.next-destination-text').textContent = 'Next: ' + nextPlace.name;
+      } else {
+        document.querySelector('.next-destination-text').textContent = 'Next Stop';
+      }
+    }
+    
+    // Fetch weather data for Chicago
+    function getWeatherData() {
+      // For demo purposes, use a static forecast
+      // In a real app, you would use a weather API with your API key
+      
+      // Generate random weather data for demo
+      var weatherTypes = ['sunny', 'partly cloudy', 'cloudy', 'rainy'];
+      var tempRanges = [
+        { min: 65, max: 78 }, // Thursday
+        { min: 70, max: 82 }, // Friday
+        { min: 68, max: 75 }, // Saturday
+        { min: 72, max: 80 }  // Sunday
+      ];
+      
+      var days = ['Thursday', 'Friday', 'Saturday', 'Sunday'];
+      var weatherData = {};
+      
+      for (var i = 0; i < days.length; i++) {
+        var day = days[i];
+        var weatherIndex = Math.floor(Math.random() * weatherTypes.length);
+        var weather = weatherTypes[weatherIndex];
+        var temp = Math.floor(Math.random() * (tempRanges[i].max - tempRanges[i].min + 1)) + tempRanges[i].min;
+        
+        var icon = 'fa-sun';
+        if (weather === 'partly cloudy') icon = 'fa-cloud-sun';
+        if (weather === 'cloudy') icon = 'fa-cloud';
+        if (weather === 'rainy') icon = 'fa-cloud-rain';
+        
+        weatherData[day] = {
+          condition: weather,
+          temperature: temp,
+          icon: icon
+        };
+      }
+      
+      // Update weather widget with current day's weather
+      updateWeatherDisplay(weatherData[currentDay]);
+      
+      // Store data for tab changes
+      window.weatherData = weatherData;
+    }
+    
+    // Update weather widget with day's forecast
+    function updateWeatherDisplay(data) {
+      if (!data) return;
+      
+      var weatherInfo = document.getElementById('weather-info');
+      weatherInfo.innerHTML = data.temperature + '°F, ' + data.condition;
+      
+      var weatherIcon = document.querySelector('.weather-widget i');
+      weatherIcon.className = 'fas ' + data.icon;
+    }
+    
+    // Show toast notification
+    function showToast(message, type) {
+      if (!type) type = 'info';
+      
+      var toast = document.getElementById('toast');
+      var toastMessage = toast.querySelector('.toast-message');
+      var icon = toast.querySelector('i');
+      
+      // Clear any existing timeout
+      if (window.toastTimeout) {
+        clearTimeout(window.toastTimeout);
+      }
+      
+      // Set message
+      toastMessage.textContent = message;
+      
+      // Set icon and color based on type
+      switch (type) {
+        case 'success':
+          icon.className = 'fas fa-check-circle';
+          toast.style.borderLeftColor = '#27ae60';
+          icon.style.color = '#27ae60';
+          break;
+        case 'error':
+          icon.className = 'fas fa-exclamation-circle';
+          toast.style.borderLeftColor = '#e74c3c';
+          icon.style.color = '#e74c3c';
+          break;
+        case 'warning':
+          icon.className = 'fas fa-exclamation-triangle';
+          toast.style.borderLeftColor = '#f39c12';
+          icon.style.color = '#f39c12';
+          break;
+        default:
+          icon.className = 'fas fa-info-circle';
+          toast.style.borderLeftColor = '#3498db';
+          icon.style.color = '#3498db';
+      }
+      
+      // Show the toast
+      toast.classList.add('show');
+      
+      // Hide after 5 seconds
+      window.toastTimeout = setTimeout(function() {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+  
+  <!-- Basic service worker for offline support -->
+  <script>
+    // Register service worker for offline support
+    if ('serviceWorker' in navigator) {
+      // Create a simple service worker script content
+      var swContent = `
+        const CACHE_NAME = 'chicago-itinerary-v1';
+        
+        // Cache core assets on install
+        self.addEventListener('install', event => {
+          event.waitUntil(
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                return cache.addAll([
+                  '/',
+                  '/index.html',
+                  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap',
+                  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+                ]);
+              })
+          );
+        });
+        
+        // Clean up old caches
+        self.addEventListener('activate', event => {
+          event.waitUntil(
+            caches.keys().then(cacheNames => {
+              return Promise.all(
+                cacheNames.filter(cacheName => {
+                  return cacheName.startsWith('chicago-itinerary-') && cacheName !== CACHE_NAME;
+                }).map(cacheName => {
+                  return caches.delete(cacheName);
+                })
+              );
+            })
+          );
+        });
+        
+        // Serve from cache, fall back to network
+        self.addEventListener('fetch', event => {
+          event.respondWith(
+            caches.match(event.request)
+              .then(response => {
+                // If in cache, return the cached version
+                if (response) {
+                  return response;
+                }
+                
+                // Otherwise fetch from network
+                return fetch(event.request)
+                  .then(response => {
+                    // Don't cache non-successful responses or Google Maps API requests
+                    if (!response || response.status !== 200 || event.request.url.includes('maps.googleapis.com')) {
+                      return response;
+                    }
+                    
+                    // Cache the response for future use
+                    const responseToCache = response.clone();
+                    caches.open(CACHE_NAME)
+                      .then(cache => {
+                        cache.put(event.request, responseToCache);
+                      });
+                    
+                    return response;
+                  })
+                  .catch(error => {
+                    // If offline and not in cache, can return a fallback
+                    console.log('Fetch failed:', error);
+                    return new Response('Offline. Please try again when connected.');
+                  });
+              })
+          );
+        });
+      `;
+      
+      // Create a Blob with the service worker content
+      var blob = new Blob([swContent], {type: 'text/javascript'});
+      var swUrl = URL.createObjectURL(blob);
+      
+      navigator.serviceWorker.register(swUrl)
+        .then(function(registration) {
+          console.log('ServiceWorker registration successful');
+        })
+        .catch(function(error) {
+          console.log('ServiceWorker registration failed: ', error);
+        });
+    }
+  </script>
+</body>
+</html>
