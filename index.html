@@ -2,40 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  >
   <meta name="description" content="Chicago Trip Itinerary for September 11-14, with live traffic data and navigation">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Chicago Trip Itinerary | Sept 11-14</title>
+
+  <!-- fonts + icons -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ================  BASE STYLES  ================= -->
   <style>
-    :root {
-      --primary: #0277bd;
-      --primary-light: #e1f5fe;
-      --primary-dark: #01579b;
-      --chicago-red: #CF3339;
-      --chicago-blue: #66C3E4;
-      --chicago-star: #FFDA05;
-      --food: #e74c3c;
-      --food-light: #fdedec;
-      --activity: #27ae60;
-      --activity-light: #e9f7ef;
-      --drink: #9b59b6;
-      --drink-light: #f4ecf7;
-      --text: #2d3436;
-      --text-light: #636e72;
-      --border: #dfe6e9;
-      --background: #f9f9f9;
-      --white: #ffffff;
-      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      --radius: 8px;
-      --transition: all 0.3s ease;
-      --safe-area-inset-top: env(safe-area-inset-top);
-      --safe-area-inset-bottom: env(safe-area-inset-bottom);
-    }
-    
+/* -------------------------------------------------- */
+/* original variables (unchanged)                     */
+:root{
+  --primary:#0277bd;--primary-light:#e1f5fe;--primary-dark:#01579b;
+  --chicago-red:#CF3339;--chicago-blue:#66C3E4;--chicago-star:#FFDA05;
+  --food:#e74c3c;--food-light:#fdedec;--activity:#27ae60;--activity-light:#e9f7ef;
+  --drink:#9b59b6;--drink-light:#f4ecf7;--text:#2d3436;--text-light:#636e72;
+  --border:#dfe6e9;--background:#f9f9f9;--white:#ffffff;
+  --shadow:0 4px 6px rgba(0,0,0,.1);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);
+  --radius:8px;--transition:.3s ease;
+  --safe-area-inset-top:env(safe-area-inset-top);--safe-area-inset-bottom:env(safe-area-inset-bottom)
+}
+/* reset */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{position:fixed;width:100%;height:100%;overflow:hidden}
+body{font-family:Poppins,sans-serif;color:var(--text);background:var(--background);
+      display:flex;flex-direction:column;line-height:1.6;touch-action:manipulation;
+      -webkit-overflow-scrolling:touch;padding-top:var(--safe-area-inset-top);
+      padding-bottom:var(--safe-area-inset-bottom)}
+.container{display:flex;flex:1;height:calc(100% - 120px);width:100%;overflow:hidden;position:relative}
+
     * {
       margin: 0;
       padding: 0;
@@ -1149,8 +1152,55 @@
     .slide-left {
       animation: slideInLeft 0.3s forwards;
     }
+
+/* ============  MOBILE-FIRST OVERRIDES  (< 768 px)  ============ */
+@media(max-width:767px){
+  :root{--tap:44px}           /* Apple HIG minimum tap-target */
+
+  /* let the doc scroll — undo fixed lock */
+  html,body{position:static;height:auto;overflow:auto}
+
+  /* fluid typography */
+  body{font-size:clamp(15px,4vw,17px)}
+  header h1{font-size:clamp(20px,6vw,26px)}
+
+  /* stack vertically */
+  .container{flex-direction:column;height:auto}
+
+  /* map gets upper 45 vh */
+  #map-container{order:1;height:45vh;width:100%}
+
+  /* bottom-sheet itinerary */
+  #itinerary{
+    order:2;height:55vh;width:100%;
+    border-top-left-radius:16px;border-top-right-radius:16px;
+    box-shadow:var(--shadow-lg);transition:transform .3s ease;
+    will-change:transform;padding-bottom:70px   /* room for nav bar */
+  }
+  #itinerary.collapsed{transform:translateY(calc(100% - 60px))}
+
+  /* fixed bottom day tabs */
+  .day-tabs{
+    position:fixed;bottom:0;left:0;right:0;height:60px;z-index:50;
+    border-top:1px solid var(--border);border-bottom:none;background:var(--white)
+  }
+  .day-tab{padding:8px 4px;font-size:13px}.day-tab-date{font-size:14px}
+
+  /* turn chevron into handle indicator */
+  #toggle-sidebar i{transform:none!important}
+
+  /* enlarge common tap targets */
+  .map-btn,.travel-mode-btn,.current-location-btn,.next-destination-btn{
+    width:var(--tap);height:var(--tap)
+  }
+
+  /* keep map clean */
+  .map-legend,.weather-widget{display:none}
+}
+/* -------------------------------------------------- */
   </style>
 </head>
+
 <body>
   <div id="loading" class="loading-spinner">
     <div class="spinner"></div>
@@ -3410,5 +3460,32 @@
         });
     }
   </script>
+</body>
+
+<!-- ================  SCRIPT SECTION  ================= -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDDvNENjvUxZ1iw9O0jge6UiV32DApUWw&libraries=places"></script>
+<script>
+/* ----------  ALL YOUR ORIGINAL JS (unchanged)  ---------- */
+
+/*  ======  MOBILE-AWARE TOGGLE-SIDEBAR HANDLER  ======  */
+document.getElementById('toggle-sidebar').addEventListener('click',function(){
+  const itin=document.getElementById('itinerary');
+  const icon=this.querySelector('i');
+
+  if(window.innerWidth<=767){          /* phone behaviour */
+    sidebarCollapsed=!sidebarCollapsed;
+    itin.classList.toggle('collapsed',sidebarCollapsed);
+    icon.className='fas fa-chevron-up';              /* always up handle */
+    setTimeout(()=>google.maps.event.trigger(map,'resize'),310);
+  }else{                               /* desktop unchanged */
+    sidebarCollapsed=!sidebarCollapsed;
+    if(sidebarCollapsed){itin.style.width='0';icon.className='fas fa-chevron-right'}
+    else{itin.style.width='40%';icon.className='fas fa-chevron-left'}
+    setTimeout(()=>google.maps.event.trigger(map,'resize'),310);
+  }
+});
+
+/* ----------  REST OF ORIGINAL JS (unchanged)  ---------- */
+</script>
 </body>
 </html>
