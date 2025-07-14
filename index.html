@@ -1277,7 +1277,8 @@
           var origin;
           
           if (currentLocation) {
-            origin = currentLocation.lat + ',' + currentLocation.lng;
+            // origin = currentLocation.lat + ',' + currentLocation.lng;
+            origin = defaultLocation.lat + ',' + defaultLocation.lng;
           } else {
             // Use Park Hyatt as default starting point
             origin = defaultLocation.lat + ',' + defaultLocation.lng;
