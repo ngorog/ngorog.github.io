@@ -1845,12 +1845,12 @@
     // Get current location
     function getCurrentLocation(showPrompt) {
       // Exit early if location fetching is disabled
-      if (disableLocationFetching) {
+      // if (disableLocationFetching) {
         currentLocation = defaultLocation;
         usingDefaultLocation = true;
         addDefaultLocationMarker();
         return;
-      }
+      // }
       
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
